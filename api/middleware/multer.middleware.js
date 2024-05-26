@@ -18,7 +18,7 @@ const fileFilter = (req, file, cb) => {
 	}
 };
 
-const profilePictureStorage = multer.diskprofilePictureStorage({
+const profilePictureStorage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, "public/uploads/user");
 	},
