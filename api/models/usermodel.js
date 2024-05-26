@@ -49,7 +49,11 @@ const users = sequelize.define("user", {
     password: {
         type: DataTypes.STRING,
         allowNull: true
-    }
+    },
+    profilePhoto: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
 
 }, {
     timestamps: true
