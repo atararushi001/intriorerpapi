@@ -1,28 +1,25 @@
-// File: models/CountryModel.js
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db.config');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db.config");
+const States = require("./statesModel");
+const Cities = require("./citiesModel");
 
-'use strict';
+("use strict");
 
-const countries = sequelize.define("countries", {
-    id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    shortname: {
-        type: DataTypes.STRING(3),
-        allowNull: false,
-    },
-    name: {
-        type: DataTypes.STRING(150),
-        allowNull: false,
-    },
-    phonecode: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
+const Countries = sequelize.define("countries", {
+	id: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		primaryKey: true,
+	},
+	name: {
+		type: DataTypes.STRING(150),
+		allowNull: false,
+	},
 });
 
-module.exports = countries;
+Countries.hasMany(States);
+States.belongsTo(Countries);
+States.hasMany(Cities);
+Cities.belongsTo(States);
+
+module.exports = Countries;
