@@ -1,5 +1,5 @@
 require("dotenv").config({ path: ".env" });
-
+const { seedCountriesStatesCities } = require("./seeders/countryStateCity/seedData");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
 	res.send("Welcome to root URL of Server");
 });
 
+// seedCountriesStatesCities();
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
 });
