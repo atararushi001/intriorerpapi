@@ -1,15 +1,15 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db.config");
-const Project = require("./project.model");
+const Design = require("./design.model");
 const User = require("./usermodel");
 
-const Payment = sequelize.define(
-  "Payment",
+const DesignApproval = sequelize.define(
+  "DesignApproval",
   {
-    project_id: {
+    design_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: Project,
+        model: Design,
         key: "id",
       },
       allowNull: false,
@@ -22,21 +22,13 @@ const Payment = sequelize.define(
       },
       allowNull: false,
     },
-    amount: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-    },
-    payment_date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    payment_method: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    feedback: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {
@@ -45,7 +37,7 @@ const Payment = sequelize.define(
 );
 
 // Define associations
-Payment.belongsTo(Project, { foreignKey: "project_id" });
-Payment.belongsTo(User, { foreignKey: "client_id" });
+DesignApproval.belongsTo(Design, { foreignKey: "design_id" });
+DesignApproval.belongsTo(User, { foreignKey: "client_id" });
 
-module.exports = Payment;
+module.exports = DesignApproval;

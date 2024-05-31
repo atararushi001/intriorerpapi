@@ -2,14 +2,18 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db.config");
 const { DataTypes } = require("sequelize");
 
+
+/*
+
+ -- make association with city and give correct field name for city Id
+
+*/
+
+
 const User = sequelize.define(
   "User",
   {
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    lastName: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -24,6 +28,7 @@ const User = sequelize.define(
     phone: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      unique: true,
       validate: {
         isNumeric: true,
         len: [10, 15], // Adjust length based on your requirements
@@ -42,7 +47,14 @@ const User = sequelize.define(
       allowNull: true,
     },
     role: {
-      type: DataTypes.ENUM("Admin", "Client", "Carpenter", "Partner"),
+      type: DataTypes.ENUM(
+        "Admin",
+        "Client",
+        "Head Carpenter",
+        "Partner",
+        "Designer",
+        "Worker"
+      ),
       allowNull: false,
     },
   },

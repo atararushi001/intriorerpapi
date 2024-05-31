@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/usermodel");
 
+
 const createUser = async (req, res) => {
   console.log(req.body);
   try {
@@ -15,6 +16,16 @@ const createUser = async (req, res) => {
       password: hashedPassword,
       profilePhoto: profilePicture,
     };
+
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email: req.body.email }, { phone: req.body.phone }],
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "Email or phone already in use" });
+    }
 
     const user = await User.create(userData);
 
@@ -36,74 +47,102 @@ const createUser = async (req, res) => {
     }
   }
 };
+
 // Get all users
-const getAllUsers = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
     res.status(200).json(users);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ message: "Error fetching users", error });
   }
 };
 
-// Get user by ID
+// Get a user by ID
 const getUserById = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
-    if (user) {
-      res.status(200).json(user);
-    } else {
-      res.status(404).json({ error: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ message: "Error fetching user", error });
   }
 };
 
-
-
+// Update a user
 const updateUser = async (req, res) => {
   try {
-    const { email } = req.body;
-    const userId = req.params.id;
+    const { id } = req.params;
+    const {
+      name,
+      email,
+      phone,
+      address,
+      password,
+      profileImage,
+      role,
+      cityId,
+    } = req.body;
 
-    // Check if the email already exists and is associated with a different user
-    if (email) {
-      const existingUser = await User.findOne({ where: { email } });
-      if (existingUser && existingUser.id !== parseInt(userId, 10)) {
-        return res
-          .status(400)
-          .json({ error: "Email already in use by another user" });
-      }
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const [updated] = await User.update(req.body, {
-      where: { id: userId },
+    // Check if email or phone is already used by another user
+    const existingUser = await User.findOne({
+      where: {
+        id: { [Op.ne]: id },
+        [Op.or]: [{ email }, { phone }],
+      },
     });
 
-    if (updated) {
-      const updatedUser = await User.findByPk(userId);
-      res.status(200).json(updatedUser);
-    } else {
-      res.status(404).json({ error: "User not found" });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ message: "Email or phone already in use by another user" });
     }
+
+    // Update the user
+    await user.update({
+      name,
+      email,
+      phone,
+      address,
+      password,
+      profileImage,
+      role,
+      CityId: cityId,
+    });
+
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ message: "Error updating user", error });
   }
 };
 
-// Delete user by ID
+// Delete a user
 const deleteUser = async (req, res) => {
   try {
-    const deleted = await User.destroy({
-      where: { id: req.params.id },
-    });
-    if (deleted) {
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: "User not found" });
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    await user.destroy();
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ message: "Error deleting user", error });
   }
+};
+
+module.exports = {
+  createUser,
+  getUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
 };
