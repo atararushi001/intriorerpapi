@@ -15,7 +15,7 @@ const createUser = async (req, res) => {
     const userData = {
       ...req.body,
       password: hashedPassword,
-      profileImage: profilePicture,
+      profilePhoto: profilePicture,
     };
 
     const existingUser = await User.findOne({
