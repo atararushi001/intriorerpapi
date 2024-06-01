@@ -24,7 +24,6 @@ const Site = sequelize.define(
     isactive: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
-      defaultValue: true,
     },
     isdeleted: {
       type: DataTypes.BOOLEAN,

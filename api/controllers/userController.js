@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/usermodel");
+const { Op } = require("sequelize");
 
 
 const createUser = async (req, res) => {
@@ -14,7 +15,7 @@ const createUser = async (req, res) => {
     const userData = {
       ...req.body,
       password: hashedPassword,
-      profilePhoto: profilePicture,
+      profileImage: profilePicture,
     };
 
     const existingUser = await User.findOne({

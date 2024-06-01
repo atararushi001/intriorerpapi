@@ -53,7 +53,7 @@ const User = sequelize.define(
         "Designer",
         "Worker"
       ),
-      allowNull: false,
+      allowNull: true,
     },
   },
   {

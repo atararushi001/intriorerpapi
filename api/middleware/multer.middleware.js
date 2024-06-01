@@ -2,6 +2,8 @@ const multer = require("multer");
 
 const mimeTypes = ["image/jpeg", "image/png", "image/jpg"];
 
+const { v4: uuidv4 } = require("uuid");
+
 const generateFileName = (prefix) => {
 	return (req, file, cb) => {
 		const uniqueSuffix = uuidv4();
