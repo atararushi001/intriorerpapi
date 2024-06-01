@@ -1,14 +1,12 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db.config");
-const { DataTypes } = require("sequelize");
-
+const Cities = require("./citiesModel");
 
 /*
 
  -- make association with city and give correct field name for city Id
 
 */
-
 
 const User = sequelize.define(
   "User",

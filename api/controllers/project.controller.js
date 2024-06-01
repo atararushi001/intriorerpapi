@@ -1,5 +1,6 @@
 const ExtraWork = require("../models/extraWork.model");
 const Package = require("../models/package.model");
+const Project = require("../models/project.model");
 const User = require("../models/usermodel");
 
 // Create a new project
