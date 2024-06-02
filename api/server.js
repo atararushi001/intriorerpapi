@@ -12,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use("/api", router);
+express.static("public");
 app.get("/", (req, res) => {
 	res.status(200);
 	res.send("Welcome to root URL of Server");

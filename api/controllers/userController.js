@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/usermodel");
 const { Op } = require("sequelize");
 
-
 const createUser = async (req, res) => {
   console.log(req.body);
   try {
@@ -72,7 +71,6 @@ const getUserById = async (req, res) => {
   }
 };
 
-// Update a user
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,7 +80,7 @@ const updateUser = async (req, res) => {
       phone,
       address,
       password,
-      profileImage,
+      profilePhoto, // Changed to profilePhoto for consistency
       role,
       cityId,
     } = req.body;
@@ -95,8 +93,10 @@ const updateUser = async (req, res) => {
     // Check if email or phone is already used by another user
     const existingUser = await User.findOne({
       where: {
-        id: { [Op.ne]: id },
-        [Op.or]: [{ email }, { phone }],
+        [Op.and]: {
+          id: { [Op.ne]: id },
+          [Op.or]: [{ email }, { phone }],
+        },
       },
     });
 
@@ -113,7 +113,7 @@ const updateUser = async (req, res) => {
       phone,
       address,
       password,
-      profileImage,
+      profilePhoto,
       role,
       CityId: cityId,
     });
@@ -123,6 +123,8 @@ const updateUser = async (req, res) => {
     res.status(500).json({ message: "Error updating user", error });
   }
 };
+
+module.exports = updateUser;
 
 // Delete a user
 const deleteUser = async (req, res) => {

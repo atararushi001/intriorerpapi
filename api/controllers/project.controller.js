@@ -5,6 +5,7 @@ const User = require("../models/usermodel");
 
 // Create a new project
 const createProject = async (req, res) => {
+  console.log("Here is body ",req.body)
   try {
     const {
       name,
@@ -23,24 +24,6 @@ const createProject = async (req, res) => {
       created_by,
       status,
     } = req.body;
-
-    // Check if related records exist
-    const package = await Package.findByPk(package_id);
-    if (!package) {
-      return res.status(400).json({ message: "Package not found" });
-    }
-    const location = await Location.findByPk(location_id);
-    if (!location) {
-      return res.status(400).json({ message: "Location not found" });
-    }
-    const client = await User.findByPk(client_id);
-    if (!client) {
-      return res.status(400).json({ message: "Client not found" });
-    }
-    const creator = await User.findByPk(created_by);
-    if (!creator) {
-      return res.status(400).json({ message: "Creator not found" });
-    }
 
     // Create the project
     const project = await Project.create({
@@ -61,8 +44,9 @@ const createProject = async (req, res) => {
       status,
     });
 
-    res.status(201).json(project);
+    res.status(201).json({ message: "Project created successfully", project });
   } catch (error) {
+    console.log("Error is",error)
     res.status(500).json({ message: "Error creating project", error });
   }
 };
@@ -72,13 +56,13 @@ const getProjects = async (req, res) => {
   try {
     const projects = await Project.findAll({
       include: [
-        { model: ExtraWork },
-        { model: Package },
+        // { model: ExtraWork },
+        // { model: Package },
         // { model: Location },
         { model: User, as: "Client" },
         { model: User, as: "Designer" },
         { model: User, as: "HeadCarpenter" },
-        { model: User, as: "Creator" },
+        // { model: User, as: "Creator" },
       ],
     });
     res.status(200).json(projects);

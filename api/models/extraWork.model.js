@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db.config");
+const Project = require("./project.model");
 
 /*
 
@@ -9,7 +10,7 @@ const sequelize = require("../config/db.config");
 */
 
 const ExtraWork = sequelize.define(
-  "ExtraWork",
+  "extraWork",
   {
     name: {
       type: DataTypes.STRING,
@@ -38,6 +39,6 @@ const ExtraWork = sequelize.define(
 );
 
 // Define association
-ExtraWork.belongsTo(Project, { foreignKey: "projectId" });
+// ExtraWork.belongsTo(Project, { foreignKey: "projectId" });
 
 module.exports = ExtraWork;
