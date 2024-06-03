@@ -3,8 +3,7 @@ const Project = require('../controllers/project.controller'); // if you're using
 // Create a new extra work
 const createExtraWork = async (req, res) => {
   try {
-    const { name, description, price, projectId } = req.body;
-
+    const { name,   description, price, projectId } = req.body;
     // Check if the project exists
     const project = await Project.getProjectById(projectId);
     if (!project) {
@@ -18,7 +17,6 @@ const createExtraWork = async (req, res) => {
       price,
       projectId,
     });
-
     res.status(201).json(extraWork);
   } catch (error) {
     console.log('Request body:', req.body); // log the request body
