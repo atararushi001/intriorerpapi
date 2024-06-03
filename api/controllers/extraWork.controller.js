@@ -1,5 +1,5 @@
-const { ExtraWork, Project } = require("../models"); // Adjust the path according to your project structure
-
+const  ExtraWork  = require("../models/extraWork.model"); // Adjust the path according to your project structure
+const Project = require('../models/project.model'); 
 // Create a new extra work
 const createExtraWork = async (req, res) => {
   try {
@@ -9,7 +9,7 @@ const createExtraWork = async (req, res) => {
     const project = await Project.findByPk(projectId);
     if (!project) {
       return res.status(400).json({ message: "Project not found" });
-    }
+    } 
 
     // Create the extra work
     const extraWork = await ExtraWork.create({
@@ -29,10 +29,11 @@ const createExtraWork = async (req, res) => {
 const getExtraWorks = async (req, res) => {
   try {
     const extraWorks = await ExtraWork.findAll({
-      include: { model: Project },
+      include : { model: Project },
     });
     res.status(200).json(extraWorks);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error fetching extra works", error });
   }
 };
