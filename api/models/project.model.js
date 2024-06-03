@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const User = require("./usermodel");
 const Package = require("./package.model");
-const ExtraWork = require("./extraWork.model");
 const sequelize = require("../config/db.config");
+const ExtraWork = require("./extraWork.model");
 
 const Project = sequelize.define(
   "Project",
@@ -114,6 +114,9 @@ const Project = sequelize.define(
 // Project.belongsTo(ExtraWork, { foreignKey: "extra_work_id" });
 // Project.belongsTo(Package, { foreignKey: "package_id" });
 // Project.belongsTo(Location, { foreignKey: "location_id" });
+Project.hasMany(ExtraWork)
+ExtraWork.hasMany(Project)
+
 Project.belongsTo(User, {
   as: "Client",
   foreignKey: "client_id",
