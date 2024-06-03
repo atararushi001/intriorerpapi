@@ -1,12 +1,12 @@
-const { ExtraWork, Project } = require("../models"); // Adjust the path according to your project structure
-
+const  ExtraWork  = require("../models/extraWork.model"); // Adjust the path according to your project structure
+const Project = require('../controllers/project.controller'); // if you're using CommonJS modules
 // Create a new extra work
 const createExtraWork = async (req, res) => {
   try {
     const { name, description, price, projectId } = req.body;
 
     // Check if the project exists
-    const project = await Project.findByPk(projectId);
+    const project = await Project.getProjectById(projectId);
     if (!project) {
       return res.status(400).json({ message: "Project not found" });
     }
@@ -21,6 +21,8 @@ const createExtraWork = async (req, res) => {
 
     res.status(201).json(extraWork);
   } catch (error) {
+    console.log('Request body:', req.body); // log the request body
+    console.log('Error:', error); // log the error
     res.status(500).json({ message: "Error creating extra work", error });
   }
 };
