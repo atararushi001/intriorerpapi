@@ -15,7 +15,7 @@ sequelize
   .then(() => {
     console.log(`Database connected to discover`);
     sequelize
-      .sync({ alter: true, logging: false })
+      .sync({ alter: true, logging: true })
       .then(() => {
         console.log("All models were synchronized successfully.");
       })

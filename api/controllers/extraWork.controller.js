@@ -1,22 +1,22 @@
-const  ExtraWork  = require("../models/extraWork.model"); // Adjust the path according to your project structure
-const Project = require('../models/project.model'); 
+const ExtraWork = require("../models/extraWork.model"); // Adjust the path according to your project structure
+const Project = require("../models/project.model");
 // Create a new extra work
 const createExtraWork = async (req, res) => {
   try {
-    const { name, description, price, projectId } = req.body;
+    const { name, description, price, ProjectId } = req.body;
 
     // Check if the project exists
-    const project = await Project.findByPk(projectId);
+    const project = await Project.findByPk(ProjectId);
     if (!project) {
       return res.status(400).json({ message: "Project not found" });
-    } 
+    }
 
     // Create the extra work
     const extraWork = await ExtraWork.create({
       name,
       description,
       price,
-      projectId,
+      ProjectId,
     });
 
     res.status(201).json(extraWork);
@@ -25,11 +25,54 @@ const createExtraWork = async (req, res) => {
   }
 };
 
+
+const createExtraWorks = async (req, res) => {
+  try {
+    const extraWorks = req.body.extraWorks;
+
+    if (!Array.isArray(extraWorks)) {
+      return res.status(400).json({ message: "Invalid input, expected an array of extra works" });
+    }
+
+    const createdExtraWorks = [];
+    const errors = [];
+
+    for (const extraWork of extraWorks) {
+      const { name, description, price, ProjectId } = extraWork;
+
+      // Check if the project exists
+      const project = await Project.findByPk(ProjectId);
+      if (!project) {
+        errors.push({ name, description, price, ProjectId, message: "Project not found" });
+        continue;
+      }
+
+      // Create the extra work
+      const newExtraWork = await ExtraWork.create({
+        name,
+        description,
+        price,
+        ProjectId,
+      });
+      createdExtraWorks.push(newExtraWork);
+    }
+
+    if (errors.length > 0) {
+      return res.status(207).json({ created: createdExtraWorks, errors });
+    }
+
+    res.status(201).json(createdExtraWorks);
+  } catch (error) {
+    res.status(500).json({ message: "Error creating extra works", error });
+  }
+};
+
+
 // Get all extra works
 const getExtraWorks = async (req, res) => {
   try {
     const extraWorks = await ExtraWork.findAll({
-      include : { model: Project },
+      include: { model: Project },
     });
     res.status(200).json(extraWorks);
   } catch (error) {
@@ -104,6 +147,7 @@ const deleteExtraWork = async (req, res) => {
 
 module.exports = {
   createExtraWork,
+  createExtraWorks,
   getExtraWorks,
   getExtraWorkById,
   updateExtraWork,
