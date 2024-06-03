@@ -10,5 +10,7 @@ router.put("/:id", projectController.updateProject); // Update a project by ID
 router.delete("/:id", projectController.deleteProject); // Delete a project by ID
 router.get("/", projectController.getProjects); // Get all projects
 router.get("/:id", projectController.getProjectById); // Get a project by ID
+router.post("/assign_designer", projectController.assignDesigner); // Get a project by ID
+router.post("/assignHeadCarpenter", projectController.assignHeadCarpenter); // Get a project by ID
 
 module.exports = router;

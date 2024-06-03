@@ -187,8 +187,59 @@ const deleteProject = async (req, res) => {
     res.status(500).json({ message: "Error deleting project", error });
   }
 };
+// Assign a designer to a project
+const assignDesigner = async (req, res) => {
+  try {
+    const { id, designer_id } = req.body;
+ 
 
+    // Find the project
+    const project = await Project.findByPk(id);
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Find the designer
+    const designer = await User.findByPk(designer_id);
+    if (!designer) {
+      return res.status(404).json({ message: "Designer not found" });
+    }
+
+    // Update the project's designer_id
+    await project.update({ designer_id });
+
+    res.status(200).json({ message: "Designer assigned successfully", project });
+  } catch (error) {
+    res.status(500).json({ message: "Error assigning designer", error });
+  }
+};
+const assignHeadCarpenter = async (req, res) => {
+  try {
+    const { id, head_carpenter_id } = req.body;
+
+    // Find the project
+    const project = await Project.findByPk(id);
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Find the head carpenter
+    const headCarpenter = await User.findByPk(head_carpenter_id);
+    if (!headCarpenter) {
+      return res.status(404).json({ message: "Head Carpenter not found" });
+    }
+
+    // Update the project's head_carpenter_id
+    await project.update({ head_carpenter_id });
+
+    res.status(200).json({ message: "Head Carpenter assigned successfully", project });
+  } catch (error) {
+    res.status(500).json({ message: "Error assigning Head Carpenter", error });
+  }
+};
 module.exports = {
+  assignHeadCarpenter,
+  assignDesigner,
   createProject,
   getProjects,
   getProjectById,
