@@ -27,6 +27,13 @@ const profilePictureStorage = multer.diskStorage({
 	filename: generateFileName("profilePicture"),
 });
 
+const designStorage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, "public/uploads/designs");
+	},
+	filename: generateFileName("design"),
+});
+
 const profilePictureUpload = multer({
 	storage: profilePictureStorage,
 	fileFilter: fileFilter,
@@ -35,6 +42,15 @@ const profilePictureUpload = multer({
 	},
 });
 
+const designUpload = multer({
+	storage: designStorage,
+	fileFilter: fileFilter,
+	limits: {
+		fileSize: 1024 * 1024 * 10, // 5MB
+	},
+});
+
 module.exports = {
 	profilePictureUpload,
+	designUpload,
 };
