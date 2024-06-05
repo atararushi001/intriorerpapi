@@ -1,3 +1,4 @@
+const Design = require("../models/design.model");
 const ExtraWork = require("../models/extraWork.model");
 const Package = require("../models/package.model");
 const Project = require("../models/project.model");
@@ -5,7 +6,7 @@ const User = require("../models/usermodel");
 
 // Create a new project
 const createProject = async (req, res) => {
-  console.log("Here is body ",req.body)
+  console.log("Here is body ", req.body);
   try {
     const {
       name,
@@ -46,7 +47,7 @@ const createProject = async (req, res) => {
 
     res.status(201).json({ message: "Project created successfully", project });
   } catch (error) {
-    console.log("Error is",error)
+    console.log("Error is", error);
     res.status(500).json({ message: "Error creating project", error });
   }
 };
@@ -57,6 +58,7 @@ const getProjects = async (req, res) => {
     const projects = await Project.findAll({
       include: [
         { model: ExtraWork },
+        { model: Design },
         // { model: Package },
         // { model: Location },
         { model: User, as: "Client" },
@@ -191,7 +193,6 @@ const deleteProject = async (req, res) => {
 const assignDesigner = async (req, res) => {
   try {
     const { id, designer_id } = req.body;
- 
 
     // Find the project
     const project = await Project.findByPk(id);
@@ -208,7 +209,9 @@ const assignDesigner = async (req, res) => {
     // Update the project's designer_id
     await project.update({ designer_id });
 
-    res.status(200).json({ message: "Designer assigned successfully", project });
+    res
+      .status(200)
+      .json({ message: "Designer assigned successfully", project });
   } catch (error) {
     res.status(500).json({ message: "Error assigning designer", error });
   }
@@ -232,7 +235,9 @@ const assignHeadCarpenter = async (req, res) => {
     // Update the project's head_carpenter_id
     await project.update({ head_carpenter_id });
 
-    res.status(200).json({ message: "Head Carpenter assigned successfully", project });
+    res
+      .status(200)
+      .json({ message: "Head Carpenter assigned successfully", project });
   } catch (error) {
     res.status(500).json({ message: "Error assigning Head Carpenter", error });
   }
