@@ -4,7 +4,7 @@ const User = require("../models/usermodel");
 const { Op } = require("sequelize");
 
 const createUser = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   try {
     const hashedPassword = await bcrypt.hash(req.body.password || "", 10);
     const profilePicture = req.file?.path
@@ -25,10 +25,10 @@ const createUser = async (req, res) => {
 
     if (existingUser) {
       return res.status(400).json({ message: "Email or phone already in use" });
-    }
-
+    } 
+  
     const user = await User.create(userData);
-
+    
     res.status(201).json({ message: "User registered successfully", user });
   } catch (error) {
     console.error("Error registering user:", error);

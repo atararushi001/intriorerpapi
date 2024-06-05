@@ -56,7 +56,7 @@ const getProjects = async (req, res) => {
   try {
     const projects = await Project.findAll({
       include: [
-        // { model: ExtraWork },
+        { model: ExtraWork },
         // { model: Package },
         // { model: Location },
         { model: User, as: "Client" },
