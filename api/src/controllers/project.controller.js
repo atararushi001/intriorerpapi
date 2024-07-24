@@ -84,12 +84,12 @@ const getProjectById = async (req, res) => {
         const project = await Project.findByPk(req.params.id, {
             include: [
                 { model: ExtraWork },
-                { model: Package },
+                { model: Package, as: "Package" },
                 // { model: Location },
                 { model: User, as: "Client" },
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
-                { model: User, as: "Creator" },
+                // { model: User, as: "Creator" },
             ],
         });
         if (!project) {
@@ -100,6 +100,30 @@ const getProjectById = async (req, res) => {
         res.status(500).json({ message: "Error fetching project", error });
     }
 };
+
+// Get a project by  Designer_id
+const getProjectsByDesignerId = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { designer_id: req.params.id },
+            include: [
+                { model: ExtraWork },
+                { model: Package, as: "Package" },
+                // { model: Location },
+                { model: User, as: "Client" },
+                { model: User, as: "Designer" },
+                { model: User, as: "HeadCarpenter" },
+            ],
+        });
+        if (!projects || projects.length === 0) {
+            return res.status(404).json({ message: "No projects found for this designer" });
+        }
+        res.status(200).json(projects);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching projects", error });
+    }
+};
+
 
 // Update a project
 const updateProject = async (req, res) => {
@@ -256,6 +280,7 @@ module.exports = {
     createProject,
     getProjects,
     getProjectById,
+    getProjectsByDesignerId,
     updateProject,
     assignDesigner,
     assignHeadCarpenter,

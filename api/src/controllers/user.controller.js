@@ -197,6 +197,43 @@ const updateUser = async (req, res) => {
 
 module.exports = updateUser;
 
+//check user login
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Find the user by email
+        const user = await User.findOne({
+            where: { email },
+            include: [
+                { model: Cities, as: "city", 
+                         include: [
+                    {
+                        model: States,  
+                        include: [{ model: Countries }],
+                    }, 
+                ] }, // Add a comma here
+            ],
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "Invalid email addrss" });
+        }
+        const hashedPassword = await bcrypt.hash(password || "", 10);
+        // Check if the password is correct
+        const isPasswordValid = await bcrypt.compare(hashedPassword, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid password" });
+        }
+
+        // Send user data and login message
+        res.status(200).json({ message: "User logged in successfully", user });
+    } catch (error) {
+        console.error("Error logging in user:", error);
+        res.status(500).json({ message: "Error logging in user", error: error.message });
+    }
+};
+
 // Delete a user
 const deleteUser = async (req, res) => {
     try {
@@ -229,4 +266,5 @@ module.exports = {
     getUserById,
     updateUser,
     deleteUser,
+    loginUser,
 };

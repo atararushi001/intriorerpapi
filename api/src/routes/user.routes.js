@@ -6,9 +6,11 @@ const {
     getUserById,
     updateUser,
     deleteUser,
+    loginUser
 } = require("../controllers/user.controller");
 
 router.post("/", profilePictureUpload.single("profilePicture"), createUser);
+router.post("/loginUser", loginUser);
 router.get("/", getUsers);
 router.get("/:id", getUserById);
 router.put("/:id", profilePictureUpload.single("profilePicture"),  updateUser);

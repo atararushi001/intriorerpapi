@@ -9,5 +9,6 @@ router.patch("/:id/assign-head-carpenter", projectController.assignHeadCarpenter
 router.delete("/:id", projectController.deleteProject);
 router.get("/", projectController.getProjects);
 router.get("/:id", projectController.getProjectById);
+router.get("/designer/:id", projectController.getProjectsByDesignerId);
 
 module.exports = router;
