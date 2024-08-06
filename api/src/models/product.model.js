@@ -26,6 +26,7 @@ const Product = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        
         hsnCode: {
             type: DataTypes.STRING,
             allowNull: true,

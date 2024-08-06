@@ -1,6 +1,8 @@
 const ExtraWork = require("../models/extraWork.model");
 const Package = require("../models/package.model");
 const Project = require("../models/project.model");
+const Project_Sub_Stage = require("../models/project_sub_stage.model");
+const project_Stage = require("../models/project_stage.model");
 const User = require("../models/user.model");
 
 // Create a new project
@@ -24,7 +26,7 @@ const createProject = async (req, res) => {
             head_carpenter_id,
             created_by,
             status,
-            packageId
+            packageId,
         } = req.body;
 
         // Create the project
@@ -87,6 +89,16 @@ const getProjectById = async (req, res) => {
                 { model: Package, as: "Package" },
                 // { model: Location },
                 { model: User, as: "Client" },
+                {
+                    model: project_Stage,
+                    as: "project_Stage",
+                    include: [
+                        {
+                            model: Project_Sub_Stage,
+                            as: "Project_Sub_Stages", // Ensure this alias matches your model definition
+                        },
+                    ],
+                },
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 // { model: User, as: "Creator" },
@@ -116,14 +128,15 @@ const getProjectsByDesignerId = async (req, res) => {
             ],
         });
         if (!projects || projects.length === 0) {
-            return res.status(404).json({ message: "No projects found for this designer" });
+            return res
+                .status(404)
+                .json({ message: "No projects found for this designer" });
         }
         res.status(200).json(projects);
     } catch (error) {
         res.status(500).json({ message: "Error fetching projects", error });
     }
 };
-
 
 // Update a project
 const updateProject = async (req, res) => {
@@ -275,8 +288,46 @@ const deleteProject = async (req, res) => {
         res.status(500).json({ message: "Error deleting project", error });
     }
 };
+// Update project status by projectStageId
+const updateProjectStatus = async (req, res) => {
+    try {
+        const { projectID } = req.params.id;
+        const { status } = req.body;
+        // Fetch the project by projectStageId\
+        console.log("Project is ", projectID);
+        const project = await Project.findByPk(req.params.id);
+
+        if (!project) {
+            return res.status(404).json({ message: "Project not found" });
+        }
+        // Update the status based on the value received from the API
+        if (status === "row") {
+            project.projectStageId = 1;
+        } else if (status === "laminate") {
+            project.projectStageId = 2;
+        } else if (status === "handover") {
+            project.projectStageId   = 3;
+        } else {
+            return res.status(400).json({ message: "Invalid status value" });
+        }
+
+        // Save the updated project
+        await project.save();
+
+        res.status(200).json({
+            message: "Project status updated successfully",
+            project,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating project status",
+            error,
+        });
+    }
+};
 
 module.exports = {
+    updateProjectStatus,
     createProject,
     getProjects,
     getProjectById,

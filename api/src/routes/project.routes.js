@@ -10,5 +10,5 @@ router.delete("/:id", projectController.deleteProject);
 router.get("/", projectController.getProjects);
 router.get("/:id", projectController.getProjectById);
 router.get("/designer/:id", projectController.getProjectsByDesignerId);
-
+router.put('/updatestatus/:id', projectController.updateProjectStatus);
 module.exports = router;

@@ -3,6 +3,7 @@ const User = require("./user.model");
 const Package = require("./package.model");
 const sequelize = require("../config/db.config");
 const ExtraWork = require("./extraWork.model");
+const project_Stage = require("./project_stage.model");
 
 const Project = sequelize.define(
     "Project",
@@ -102,11 +103,11 @@ const Project = sequelize.define(
         //   },
         //   allowNull: true,
         // },
-        status: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            defaultValue: "Pending",
-        },
+        // status: {
+        //     type: DataTypes.STRING,
+        //     allowNull: true,
+        //     defaultValue: "Pending",
+        // },
         isActive: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
@@ -132,7 +133,12 @@ User.hasMany(Project, { foreignKey: "client_id" });
 //     foreignKey: "location_id",
 //     allowNull: true,
 // });
-
+Project.belongsTo(project_Stage, {
+  
+    foreignKey: "projectStageId",
+    allowNull: true,
+    defaultValue: 1,
+});
 Project.belongsTo(User, {
     as: "Client",
     foreignKey: "client_id",
