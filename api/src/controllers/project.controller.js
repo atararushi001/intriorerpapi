@@ -69,8 +69,19 @@ const getProjects = async (req, res) => {
                 { model: Package, as: "Package" },
                 // { model: Location },
                 { model: User, as: "Client" },
+                {
+                    model: project_Stage,
+                    as: "project_Stage",
+                    include: [
+                        {
+                            model: Project_Sub_Stage,
+                            as: "Project_Sub_Stages", // Ensure this alias matches your model definition
+                        },
+                    ],
+                },
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
+                { model: User, as: "Supervisor" },
                 // { model: User, as: "Creator" },
             ],
         });
@@ -101,6 +112,7 @@ const getProjectById = async (req, res) => {
                 },
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
+                { model: User, as: "Supervisor" },
                 // { model: User, as: "Creator" },
             ],
         });
@@ -122,9 +134,20 @@ const getProjectsByDesignerId = async (req, res) => {
                 { model: ExtraWork },
                 { model: Package, as: "Package" },
                 // { model: Location },
+                {
+                    model: project_Stage,
+                    as: "project_Stage",
+                    include: [
+                        {
+                            model: Project_Sub_Stage,
+                            as: "Project_Sub_Stages", // Ensure this alias matches your model definition
+                        },
+                    ],
+                },
                 { model: User, as: "Client" },
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
+                { model: User, as: "Supervisor" },
             ],
         });
         if (!projects || projects.length === 0) {
@@ -138,6 +161,40 @@ const getProjectsByDesignerId = async (req, res) => {
     }
 };
 
+const getProjectsBysupervisorId = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { supervisor_id: req.params.id },
+            include: [
+                { model: ExtraWork },
+                { model: Package, as: "Package" },
+                // { model: Location },
+                {
+                    model: project_Stage,
+                    as: "project_Stage",
+                    include: [
+                        {
+                            model: Project_Sub_Stage,
+                            as: "Project_Sub_Stages", // Ensure this alias matches your model definition
+                        },
+                    ],
+                },
+                { model: User, as: "Client" },
+                { model: User, as: "Designer" },
+                { model: User, as: "HeadCarpenter" },
+                { model: User, as: "Supervisor" },
+            ],
+        });
+        if (!projects || projects.length === 0) {
+            return res
+                .status(404)
+                .json({ message: "No projects found for this designer" });
+        }
+        res.status(200).json(projects);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching projects", error });
+    }
+};
 // Update a project
 const updateProject = async (req, res) => {
     try {
@@ -243,7 +300,29 @@ const assignDesigner = async (req, res) => {
         res.status(500).json({ message: "Error assigning designer", error });
     }
 };
+const assignSupervisor = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { supervisor_id } = req.body;
 
+        const project = await Project.findByPk(id);
+        if (!project) {
+            return res.status(404).json({ message: "Project not found" });
+        }
+
+        const designer = await User.findByPk(supervisor_id);
+        if (!designer) {
+            return res.status(400).json({ message: "Supervisor not found" });
+        }
+
+        // Update the project
+        await project.update({ supervisor_id });
+
+        res.status(200).json(project);
+    } catch (error) {
+        res.status(500).json({ message: "Error assigning Supervisor", error });
+    }
+};
 const assignHeadCarpenter = async (req, res) => {
     try {
         const { id } = req.params;
@@ -327,13 +406,16 @@ const updateProjectStatus = async (req, res) => {
 };
 
 module.exports = {
+    
     updateProjectStatus,
     createProject,
     getProjects,
     getProjectById,
     getProjectsByDesignerId,
+    getProjectsBysupervisorId,
     updateProject,
     assignDesigner,
     assignHeadCarpenter,
+    assignSupervisor,
     deleteProject,
 };

@@ -161,6 +161,11 @@ Project.belongsTo(User, {
     allowNull: true,
 });
 Project.belongsTo(User, {
+    as: "Supervisor",
+    foreignKey: "supervisor_id",
+    allowNull: true,
+});
+Project.belongsTo(User, {
     as: "CreadtedBy",
     foreignKey: "created_by_id",
     allowNull: true,
