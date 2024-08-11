@@ -125,6 +125,79 @@ const getProjectById = async (req, res) => {
     }
 };
 
+// get a project by client_id
+const getProjectsByClientId = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { client_id: req.params.id },
+            include: [
+                { model: ExtraWork },
+                { model: Package, as: "Package" },
+                // { model: Location },
+                {
+                    model: project_Stage,
+                    as: "project_Stage",
+                    include: [
+                        {
+                            model: Project_Sub_Stage,
+                            as: "Project_Sub_Stages", // Ensure this alias matches your model definition
+                        },
+                    ],
+                },
+                { model: User, as: "Client" },
+                { model: User, as: "Designer" },
+                { model: User, as: "HeadCarpenter" },
+                { model: User, as: "Supervisor" },
+            ],
+        });
+        if (!projects || projects.length === 0) {
+            return res
+                .status(404)
+                .json({ message: "No projects found for this client" });
+        }
+        res.status(200).json(projects);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching projects", error });
+    }
+};
+//get project by head_carpenter_id
+const getProjectsByhead_carpenter_id = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { head_carpenter_id: req.params.id },
+            include: [
+                { model: ExtraWork },
+                { model: Package, as: "Package" },
+                // { model: Location },
+                {
+                    model: project_Stage,
+                    as: "project_Stage",
+                    include: [
+                        {
+                            model: Project_Sub_Stage,
+                            as: "Project_Sub_Stages", // Ensure this alias matches your model definition
+                        },
+                    ],
+                },
+                { model: User, as: "Client" },
+                { model: User, as: "Designer" },
+                { model: User, as: "HeadCarpenter" },
+                { model: User, as: "Supervisor" },
+            ],
+        });
+        if (!projects || projects.length === 0) {
+            return res
+                .status(404)
+                .json({ message: "No projects found for this designer" });
+        }
+        res.status(200).json(projects);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching projects", error });
+    }
+};
+
+
+
 // Get a project by  Designer_id
 const getProjectsByDesignerId = async (req, res) => {
     try {
@@ -160,7 +233,7 @@ const getProjectsByDesignerId = async (req, res) => {
         res.status(500).json({ message: "Error fetching projects", error });
     }
 };
-
+// get a project by supervisor_id
 const getProjectsBysupervisorId = async (req, res) => {
     try {
         const projects = await Project.findAll({
@@ -411,8 +484,10 @@ module.exports = {
     createProject,
     getProjects,
     getProjectById,
+    getProjectsByClientId,
     getProjectsByDesignerId,
     getProjectsBysupervisorId,
+    getProjectsByhead_carpenter_id,
     updateProject,
     assignDesigner,
     assignHeadCarpenter,
