@@ -4,6 +4,7 @@ const Package = require("./package.model");
 const sequelize = require("../config/db.config");
 const ExtraWork = require("./extraWork.model");
 const project_Stage = require("./project_stage.model");
+const Design = require("./design.model");
 
 const Project = sequelize.define(
     "Project",
@@ -170,5 +171,7 @@ Project.belongsTo(User, {
     foreignKey: "created_by_id",
     allowNull: true,
 });
+Project.hasMany(Design);
+Design.belongsTo(Project);
 
 module.exports = Project;

@@ -13,6 +13,16 @@ const Design = sequelize.define(
             type: DataTypes.TEXT,
             allowNull: true,
         },
+        designapprovalbyclient: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true,
+            defaultValue: false,
+        },
+        feedbackgivenbyclient: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            // defaultValue: false
+        },
         file_path: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -23,7 +33,7 @@ const Design = sequelize.define(
     },
 );
 
-Project.hasMany(Design);
-Design.belongsTo(Project);
+// Project.hasMany(Design);
+// Design.belongsTo(Project);
 
 module.exports = Design;

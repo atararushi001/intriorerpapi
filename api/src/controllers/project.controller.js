@@ -4,6 +4,7 @@ const Project = require("../models/project.model");
 const Project_Sub_Stage = require("../models/project_sub_stage.model");
 const project_Stage = require("../models/project_stage.model");
 const User = require("../models/user.model");
+const Design = require("../models/design.model");
 
 // Create a new project
 const createProject = async (req, res) => {
@@ -82,6 +83,7 @@ const getProjects = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
+                {  model: Design, as: 'Designs'  },
                 // { model: User, as: "Creator" },
             ],
         });
@@ -113,6 +115,8 @@ const getProjectById = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
+                {  model: Design, as: 'Designs'  },
+
                 // { model: User, as: "Creator" },
             ],
         });
@@ -148,6 +152,8 @@ const getProjectsByClientId = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
+                {  model: Design, as: 'Designs'  },
+
             ],
         });
         if (!projects || projects.length === 0) {
@@ -183,6 +189,8 @@ const getProjectsByhead_carpenter_id = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
+                {  model: Design, as: 'Designs'  },
+
             ],
         });
         if (!projects || projects.length === 0) {
@@ -221,6 +229,8 @@ const getProjectsByDesignerId = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
+                {  model: Design, as: 'Designs'  },
+
             ],
         });
         if (!projects || projects.length === 0) {
@@ -256,6 +266,8 @@ const getProjectsBysupervisorId = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
+                {  model: Design, as: 'Designs'  },
+
             ],
         });
         if (!projects || projects.length === 0) {
