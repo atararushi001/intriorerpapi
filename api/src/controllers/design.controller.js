@@ -16,5 +16,30 @@ const storeDesign = async (req, res) => {
         res.status(500).json({ message: "Error storing design", error });
     }
 };
+const updateDesignApprovalAndFeedback = async (req, res) => {
+    const { id } = req.params;
+    const { designapprovalbyclient, feedbackgivenbyclient } = req.body;
 
-exports.storeDesign = storeDesign;
+    try {
+        const design = await Design.findByPk(id);
+        if (!design) {
+            return res.status(404).json({ error: 'Design not found' });
+        }
+
+        design.designapprovalbyclient = designapprovalbyclient;
+        design.feedbackgivenbyclient = feedbackgivenbyclient;
+
+        await design.save();
+
+        res.json(design);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+module.exports = {
+    storeDesign,
+    updateDesignApprovalAndFeedback,
+};
+
+// exports.storeDesign = storeDesign;

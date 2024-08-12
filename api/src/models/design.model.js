@@ -33,7 +33,5 @@ const Design = sequelize.define(
     },
 );
 
-// Project.hasMany(Design);
-// Design.belongsTo(Project);
 
 module.exports = Design;

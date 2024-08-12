@@ -21,7 +21,7 @@ router.use("/geographic-entities", geographicEntityRoutes);
 router.use("/extra-works", extraWorkRoutes);
 router.use("/packages", packageRoutes);
 router.use("/designs", designRoutes);
-router.use("/designs", designRoutes);
+// router.use("/designs", designRoutes);
 router.use("/units", unitRoutes);
 router.use("/products", productRoutes);
 
