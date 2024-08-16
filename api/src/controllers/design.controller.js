@@ -54,8 +54,22 @@ const updateDesignApprovalAndFeedback = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+const getDesignById = async (req, res) => {
+    const { id } = req.params;
+console.log(id);
+    try {
+        const design = await Design.findByPk(id);
+        if (!design) {
+            return res.status(404).json({ error: 'Design not found' });
+        }
 
+        res.json(design);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 module.exports = {
+    getDesignById,
     storeDesign,
     updateDesignApprovalAndFeedback,
     deleteDesign
