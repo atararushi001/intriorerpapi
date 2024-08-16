@@ -19,7 +19,7 @@ app.use("/api", router);
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 });
-// const {
-//     seedGeographicEntities,
-// } = require("./src/seeders/geographic_entity/seedGeographicEntities");
-// seedGeographicEntities();
+const {
+    seedGeographicEntities,
+} = require("./src/seeders/geographic_entity/seedGeographicEntities");
+seedGeographicEntities();

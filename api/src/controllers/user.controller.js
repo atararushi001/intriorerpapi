@@ -195,7 +195,7 @@ const updateUser = async (req, res) => {
     }
 };
 
-module.exports = updateUser;
+// module.exports = updateUser;
 
 //check user login
 const loginUser = async (req, res) => {
@@ -221,7 +221,7 @@ const loginUser = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password || "", 10);
         // Check if the password is correct
-        const isPasswordValid = await bcrypt.compare(hashedPassword, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid password" });
         }
