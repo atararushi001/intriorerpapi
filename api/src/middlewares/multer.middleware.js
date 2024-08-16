@@ -41,6 +41,12 @@ const extraWorkStorage = multer.diskStorage({
     filename: generateFileName("extraWork"),
 });
 
+const Punch_in_Storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads/punch_in");
+    },
+    filename: generateFileName("extraWork"),
+});
 const profilePictureUpload = multer({
     storage: profilePictureStorage,
     fileFilter: fileFilter,
@@ -65,8 +71,16 @@ const extraWorkUpload = multer({
     },
 });
 
+const punch_in_image = multer({
+    storage: Punch_in_Storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 10, // 5MB
+    },
+});
 module.exports = {
     profilePictureUpload,
     designUpload,
     extraWorkUpload,
+    punch_in_image,
 };

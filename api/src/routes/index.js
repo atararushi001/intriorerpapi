@@ -1,6 +1,8 @@
 const router = require("express").Router();
 
 const userRoutes = require("./user.routes");
+const punchinRoutes = require("./punch_in_user.routes");
+
 const projectRoutes = require("./project.routes");
 const geographicEntityRoutes = require("./geographic_entity.routes");
 const extraWorkRoutes = require("./exta_work.routes");
@@ -16,6 +18,8 @@ const paymentStageRoutes = require("./payment_stage.routes");
 
 
 router.use("/users", userRoutes);
+router.use("/punch-in", punchinRoutes);
+
 router.use("/projects", projectRoutes);
 router.use("/geographic-entities", geographicEntityRoutes);
 router.use("/extra-works", extraWorkRoutes);
@@ -29,6 +33,7 @@ router.use("/purchase-orders", purchaseOrderRoutes);
 
 // router.use("/orders", orderRoutes);
 router.use("/payment-stages", paymentStageRoutes);
+
 
 
 module.exports = router;
