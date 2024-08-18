@@ -1,112 +1,51 @@
-const Order = require("../models/order.model");
-const Product = require("../models/product.model");
-const User = require("../models/user.model");
+const  Order  = require('../models/order.model');
 
-// Create a new order
+const OrderProduct = require('../models/orderproduct.model');
 const createOrder = async (req, res) => {
-    try {
-        // Create the order
-        const order = await Order.create(req.body);
+    const { products, invoiceNumber, orderBy } = req.body;
 
-        const createdOrder = await Order.findByPk(order.dataValues.id, {
+    if (!products || !Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ message: "Products array is required" });
+    }
+
+    if (!invoiceNumber) {
+        return res.status(400).json({ message: "Invoice number is required" });
+    }
+
+    try {
+        const createdOrder = await Order.create({
+            invoiceNumber,
+            orderBy,
+            // deliveredBy,
+            // dispatchBy,
+        });
+
+        for (const product of products) {
+            const { productId, quantity } = product;
+            if (!productId || !quantity) {
+                return res.status(400).json({ message: "Product ID and quantity are required" });
+            }
+
+            await OrderProduct.create({
+                orderId: createdOrder.id,
+                productId,
+                quantity,
+            });
+        }
+
+        const fullOrder = await Order.findByPk(createdOrder.id, {
             include: [
-                { model: Product },
-                { model: User, as: "orderBy" },
-                { model: User, as: "deliveredBy" },
-                { model: User, as: "dispatchBy" },
+               
+                
             ],
         });
-        res.status(201).json(createdOrder);
+
+        res.status(201).json(fullOrder);
     } catch (error) {
         res.status(500).json({ message: "Error creating order", error });
     }
 };
 
-// Get all orders
-const getOrders = async (req, res) => {
-    try {
-        const orders = await Order.findAll({
-            include: [
-                { model: Product },
-                { model: User, as: "orderBy" },
-                { model: User, as: "deliveredBy" },
-                { model: User, as: "dispatchBy" },
-            ],
-        });
-        res.status(200).json(orders);
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching orders", error });
-    }
-};
-
-// Get an order by ID
-const getOrderById = async (req, res) => {
-    try {
-        const order = await Order.findByPk(req.params.id, {
-            include: [
-                { model: Product },
-                { model: User, as: "orderBy" },
-                { model: User, as: "deliveredBy" },
-                { model: User, as: "dispatchBy" },
-            ],
-        });
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
-        }
-        res.status(200).json(order);
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching order", error });
-    }
-};
-
-// Update an order
-const updateOrder = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const order = await Order.findByPk(id);
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
-        }
-
-        // Update the order
-        await order.update(req.body);
-
-        const updatedOrder = await Order.findByPk(order.dataValues.id, {
-            include: [
-                { model: Product },
-                { model: User, as: "orderBy" },
-                { model: User, as: "deliveredBy" },
-                { model: User, as: "dispatchBy" },
-            ],
-        });
-
-        res.status(200).json(updatedOrder);
-    } catch (error) {
-        res.status(500).json({ message: "Error updating order", error });
-    }
-};
-
-// Delete an order
-const deleteOrder = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const order = await Order.findByPk(id);
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
-        }
-
-        await order.destroy();
-        res.status(200).json({ message: "Order deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ message: "Error deleting order", error });
-    }
-};
-
 module.exports = {
     createOrder,
-    getOrders,
-    getOrderById,
-    updateOrder,
-    deleteOrder,
 };

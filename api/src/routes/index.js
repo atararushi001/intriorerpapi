@@ -13,7 +13,7 @@ const productRoutes = require("./product.routes");
 
 const purchaseOrderRoutes = require("./purchase_order.routes");
 
-// const orderRoutes = require("./order.routes");
+
 const paymentStageRoutes = require("./payment_stage.routes");
 
 
@@ -31,7 +31,9 @@ router.use("/products", productRoutes);
 
 router.use("/purchase-orders", purchaseOrderRoutes);
 
-// router.use("/orders", orderRoutes);
+const orderRoutes = require("./order.routes");
+router.use("/orders", orderRoutes);
+
 router.use("/payment-stages", paymentStageRoutes);
 
 
