@@ -17,6 +17,7 @@ router.put(
     extraWorkController.updateExtraWork,
 ); // Update a extraWork by ID
 router.delete("/:id", extraWorkController.deleteExtraWork); // Delete a extraWork by ID
+router.get("/projectid/:projectId", extraWorkController.getExtraWorkByProjectId);
 router.get("/", extraWorkController.getExtraWorks); // Get all extraWorks
 router.get("/:id", extraWorkController.getExtraWorkById); // Get sites by site_id
 

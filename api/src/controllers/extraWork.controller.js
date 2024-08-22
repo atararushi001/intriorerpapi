@@ -1,9 +1,10 @@
 const ExtraWork = require("../models/extraWork.model");
 const Project = require("../models/project.model");
 
+// Create a new extra work
 const createExtraWork = async (req, res) => {
     try {
-        const { name, description, price, ProjectId } = req.body;
+        const { name, description, price, ProjectId, Height, Width, sqft } = req.body;
         const imageUrl = req.file?.path
             ? req.file.path.replace(/\\/g, "/").split("public")[1]
             : "";
@@ -18,6 +19,9 @@ const createExtraWork = async (req, res) => {
             description,
             price,
             ProjectId,
+            Height,
+            Width,
+            sqft,
             imageUrl,
         });
 
@@ -53,12 +57,28 @@ const getExtraWorkById = async (req, res) => {
         res.status(500).json({ message: "Error fetching extra work", error });
     }
 };
+// Get extra works by ProjectId
+const getExtraWorkByProjectId = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const extraWorks = await ExtraWork.findAll({
+            where: { ProjectId: projectId },
+            include: { model: Project },
+        });
+        if (extraWorks.length === 0) {
+            return res.status(404).json({ message: "No extra works found for this project" });
+        }
+        res.status(200).json(extraWorks);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching extra works by project ID", error });
+    }
+};
 
 // Update an extra work
 const updateExtraWork = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, price, ProjectId } = req.body;
+        const { name, description, price, ProjectId, Height, Width, sqft } = req.body;
         const imageUrl = req.file?.path
             ? req.file.path.replace(/\\/g, "/").split("public")[1]
             : "";
@@ -82,6 +102,9 @@ const updateExtraWork = async (req, res) => {
             description,
             price,
             ProjectId,
+            Height,
+            Width,
+            sqft,
             imageUrl,
         });
 
@@ -111,6 +134,7 @@ module.exports = {
     createExtraWork,
     getExtraWorks,
     getExtraWorkById,
+    getExtraWorkByProjectId,
     updateExtraWork,
     deleteExtraWork,
 };
