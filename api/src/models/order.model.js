@@ -3,12 +3,14 @@ const sequelize = require("../config/db.config");
 const User = require('./user.model');
 const Product = require('./product.model');
 const OrderProduct = require('./orderproduct.model');
+const Project = require('./project.model');
 
 const Order = sequelize.define('Order', {
     invoiceNumber: {
         type: DataTypes.STRING,
         allowNull: false,
     },
+
     // orderBy: {
     //     type: DataTypes.INTEGER,
     //     allowNull: false,
@@ -21,6 +23,11 @@ const Order = sequelize.define('Order', {
     //     type: DataTypes.INTEGER,
     //     allowNull: true,
     // },
+});
+Order.belongsTo(Project, {
+    as: "projectid",
+    foreignKey: "project",
+    allowNull: true,
 });
 Order.belongsTo(User, {
     as: "orderByid",

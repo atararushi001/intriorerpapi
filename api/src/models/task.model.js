@@ -50,4 +50,4 @@ Task.belongsTo(Project_Sub_Stage, {
     onDelete: 'CASCADE',
 });
 
-module.exports = Task;
+module.exports = Task;  
