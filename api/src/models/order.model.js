@@ -10,7 +10,11 @@ const Order = sequelize.define('Order', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-
+    status: {
+        type: DataTypes.ENUM('pending', 'dispatched', 'delivered'),
+        allowNull: false,
+        defaultValue: 'pending',
+    },
     // orderBy: {
     //     type: DataTypes.INTEGER,
     //     allowNull: false,
@@ -44,5 +48,6 @@ Order.belongsTo(User, {
     foreignKey: "dispatchBy",
     allowNull: true,
 });
+Order.hasMany(OrderProduct, { foreignKey: 'orderId' });
 
 module.exports = Order;
