@@ -9,7 +9,7 @@ const Order = sequelize.define('Order', {
     invoiceNumber: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
+    },  
     status: {
         type: DataTypes.ENUM('pending', 'dispatched', 'delivered'),
         allowNull: false,
