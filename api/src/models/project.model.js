@@ -135,17 +135,12 @@ User.hasMany(Project, { foreignKey: "client_id" });
 //     foreignKey: "location_id",
 //     allowNull: true,
 // });
-Project.belongsTo(project_Stage, {
-  
-    foreignKey: "projectStageId",
+project_Stage.belongsTo(Project, {
+    foreignKey: "project_id",
     allowNull: true,
-    defaultValue: 1,
 });
-Project.belongsTo(Project_Sub_Stage, {
-    foreignKey: "Project_Sub_StageId",
-    allowNull: true,
-    defaultValue: 1,
-});
+
+Project.hasMany(project_Stage, { foreignKey: 'project_id', as: 'project_Stage' });
 Project.belongsTo(User, {
     as: "Client",
     foreignKey: "client_id",

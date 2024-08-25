@@ -26,7 +26,12 @@ const profilePictureStorage = multer.diskStorage({
     },
     filename: generateFileName("profilePicture"),
 });
-
+const TaskStrorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads/Task");
+    },
+    filename: generateFileName("TaskStimages"),
+});
 const designStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "public/uploads/designs");
@@ -49,6 +54,13 @@ const Punch_in_Storage = multer.diskStorage({
 });
 const profilePictureUpload = multer({
     storage: profilePictureStorage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 2, // 2MB
+    },
+});
+const taskimagesupload = multer({
+    storage: TaskStrorage,
     fileFilter: fileFilter,
     limits: {
         fileSize: 1024 * 1024 * 2, // 2MB
@@ -83,4 +95,5 @@ module.exports = {
     designUpload,
     extraWorkUpload,
     punch_in_image,
+    taskimagesupload,
 };

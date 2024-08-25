@@ -5,11 +5,7 @@ const Project_Stage = require("./project_stage.model");
 const Project_Sub_Stage = require("./project_sub_stage.model");
 
 const Task = sequelize.define("Task", {
-    id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-    },
+
     name: {
         type: DataTypes.STRING(150),
         allowNull: false,
@@ -29,25 +25,23 @@ const Task = sequelize.define("Task", {
     },
 });
 
-Task.belongsTo(Project, {
-    foreignKey: {
-        allowNull: false,
-    },
-    onDelete: 'CASCADE',
-});
+// Task.belongsTo(Project, {
+//     foreignKey: {
+//         allowNull: false,
+//     },
+// });
 
-Task.belongsTo(Project_Stage, {
-    foreignKey: {
-        allowNull: false,
-    },
-    onDelete: 'CASCADE',
-});
+// Task.belongsTo(Project_Stage, {
+//     foreignKey: {
+//         allowNull: false,
+//     },
 
-Task.belongsTo(Project_Sub_Stage, {
-    foreignKey: {
-        allowNull: false,
-    },
-    onDelete: 'CASCADE',
-});
+// });
+// Project_Sub_Stage.hasMany(Task, { foreignKey: 'ProjectSubStageId', as: 'Tasks' });
+// Task.belongsTo(Project_Sub_Stage, {
+//     foreignKey: {
+//         allowNull: false,
+//     },
+// });
 
 module.exports = Task;  
