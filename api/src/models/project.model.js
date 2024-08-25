@@ -5,6 +5,7 @@ const sequelize = require("../config/db.config");
 const ExtraWork = require("./extraWork.model");
 const project_Stage = require("./project_stage.model");
 const Design = require("./design.model");
+const Project_Sub_Stage = require("./project_sub_stage.model");
 
 const Project = sequelize.define(
     "Project",
@@ -137,6 +138,11 @@ User.hasMany(Project, { foreignKey: "client_id" });
 Project.belongsTo(project_Stage, {
   
     foreignKey: "projectStageId",
+    allowNull: true,
+    defaultValue: 1,
+});
+Project.belongsTo(Project_Sub_Stage, {
+    foreignKey: "Project_Sub_StageId",
     allowNull: true,
     defaultValue: 1,
 });

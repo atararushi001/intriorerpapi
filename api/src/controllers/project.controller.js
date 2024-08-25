@@ -8,7 +8,7 @@ const Design = require("../models/design.model");
 
 // Create a new project
 const createProject = async (req, res) => {
-    console.log("Here is body ", req.body);
+    // console.log("Here is body ", req.body);
     try {
         const {
             name,
@@ -51,6 +51,8 @@ const createProject = async (req, res) => {
             status,
         });
 
+
+        
         res.status(201).json({
             message: "Project created successfully",
             project,
