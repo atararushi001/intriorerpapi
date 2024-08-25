@@ -31,8 +31,7 @@ const getAllTasks = async (req, res) => {
         res.status(500).json({ message: "Error fetching tasks", error: error.message });
     }
 };
-
-const getTasksByProjectId = async (req, res) => {
+exports.getTasksByProjectId = async (req, res) => {
     const { projectId } = req.params;
 
     try {
@@ -104,6 +103,10 @@ const updateTask = async (req, res) => {
             res.status(500).json({ message: "Error updating task", error: error.message });
         }
     }
+};
+
+module.exports = {
+    updateTask,
 };
 
 // Delete a task

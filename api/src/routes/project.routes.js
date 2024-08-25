@@ -15,4 +15,6 @@ router.get("/designer/:id", projectController.getProjectsByDesignerId);
 router.get("/supervisor/:id", projectController.getProjectsBysupervisorId);
 router.get("/head-carpenter/:id", projectController.getProjectsByhead_carpenter_id);
 router.put('/updatestatus/:id', projectController.updateProjectStatus);
+router.get('/gettaskbyproject/:projectId', projectController.getTasksByProjectId);
+
 module.exports = router;
