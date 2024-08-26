@@ -1,8 +1,8 @@
-const Order = require('../models/order.model');
-const OrderProduct = require('../models/orderproduct.model');
-const Product = require('../models/product.model');
-const User = require('../models/user.model');
-const Project = require('../models/project.model');
+const Order = require("../models/order.model");
+const OrderProduct = require("../models/orderproduct.model");
+const Product = require("../models/product.model");
+const User = require("../models/user.model");
+const Project = require("../models/project.model");
 
 // Create a new order
 const createOrder = async (req, res) => {
@@ -26,7 +26,9 @@ const createOrder = async (req, res) => {
         for (const product of products) {
             const { productId, quantity } = product;
             if (!productId || !quantity) {
-                return res.status(400).json({ message: "Product ID and quantity are required" });
+                return res
+                    .status(400)
+                    .json({ message: "Product ID and quantity are required" });
             }
 
             await OrderProduct.create({
@@ -38,9 +40,17 @@ const createOrder = async (req, res) => {
 
         const fullOrder = await Order.findByPk(createdOrder.id, {
             include: [
-                { model: OrderProduct },
-                { model: User, as: 'orderByid' },
-                { model: Project, as: 'projectid' },
+                { model: OrderProduct
+                    ,
+                    include: [
+                        {
+                            model: Product,
+                            as: "productId",
+                        },
+                    ],
+                 },
+                { model: User, as: "orderByid" },
+                { model: Project, as: "projectid" },
             ],
         });
 
@@ -55,10 +65,17 @@ const getAllOrders = async (req, res) => {
     try {
         const orders = await Order.findAll({
             include: [
-                { model: OrderProduct },
-            
-                { model: User, as: 'orderByid' },
-                { model: Project, as: 'projectid' },
+                { model: OrderProduct ,
+                    include: [
+                        {
+                            model: Product,
+                            as: "productId",
+                        },
+                    ],
+                },
+
+                { model: User, as: "orderByid" },
+                { model: Project, as: "projectid" },
             ],
         });
         res.status(200).json(orders);
@@ -67,15 +84,21 @@ const getAllOrders = async (req, res) => {
     }
 };
 const getOrdersByCreatedById = async (req, res) => {
-   
     const { id } = req.params;
     try {
         const orders = await Order.findAll({
             where: { orderBy: id },
             include: [
-                { model: OrderProduct },
-                { model: User, as: 'orderByid' },
-                { model: Project, as: 'projectid' },
+                { model: OrderProduct ,
+                    include: [
+                        {
+                            model: Product,
+                            as: "productId",
+                        },
+                    ],
+                },
+                { model: User, as: "orderByid" },
+                { model: Project, as: "projectid" },
             ],
         });
         res.status(200).json(orders);
@@ -114,7 +137,9 @@ const updateOrder = async (req, res) => {
         for (const product of products) {
             const { productId, quantity } = product;
             if (!productId || !quantity) {
-                return res.status(400).json({ message: "Product ID and quantity are required" });
+                return res
+                    .status(400)
+                    .json({ message: "Product ID and quantity are required" });
             }
 
             await OrderProduct.create({
@@ -126,9 +151,18 @@ const updateOrder = async (req, res) => {
 
         const fullOrder = await Order.findByPk(id, {
             include: [
-                { model: OrderProduct },
-                { model: User, as: 'orderByid' },
-                { model: Project, as: 'projectid' },
+                {
+                    model: OrderProduct
+                    ,
+                    include: [
+                        {
+                            model: Product,
+                            as: "productId",
+                        },
+                    ],
+                },
+                { model: User, as: "orderByid" },
+                { model: Project, as: "projectid" },
             ],
         });
 
@@ -138,7 +172,15 @@ const updateOrder = async (req, res) => {
     }
 };
 const conformorder = async (req, res) => {
-    const { products, invoiceNumber, orderBy, project, orderid,deliveredBy,dispatchBy } = req.body;
+    const {
+        products,
+        invoiceNumber,
+        orderBy,
+        project,
+        orderid,
+        deliveredBy,
+        dispatchBy,
+    } = req.body;
 
     if (!products || !Array.isArray(products) || products.length === 0) {
         return res.status(400).json({ message: "Products array is required" });
@@ -168,7 +210,7 @@ const conformorder = async (req, res) => {
             orderBy,
             project,
             deliveredBy,
-            dispatchBy
+            dispatchBy,
         });
 
         await OrderProduct.destroy({ where: { orderId: orderid } });
@@ -176,7 +218,9 @@ const conformorder = async (req, res) => {
         for (const product of products) {
             const { productId, quantity } = product;
             if (!productId || !quantity) {
-                return res.status(400).json({ message: "Product ID and quantity are required" });
+                return res
+                    .status(400)
+                    .json({ message: "Product ID and quantity are required" });
             }
 
             await OrderProduct.create({
@@ -195,9 +239,16 @@ const conformorder = async (req, res) => {
 
         const fullOrder = await Order.findByPk(createdOrder.id, {
             include: [
-                { model: OrderProduct },
-                { model: User, as: 'orderByid' },
-                { model: Project, as: 'projectid' },
+                { model: OrderProduct  ,
+                    include: [
+                        {
+                            model: Product,
+                            as: "productId",
+                        },
+                    ],
+                },
+                { model: User, as: "orderByid" },
+                { model: Project, as: "projectid" },
             ],
         });
 
@@ -213,3 +264,4 @@ module.exports = {
     updateOrder,
     conformorder,
 };
+``
