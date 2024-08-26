@@ -541,11 +541,11 @@ const updateProjectStatus = async (req, res) => {
         }
         // Update the status based on the value received from the API
         if (status === "row") {
-            project.projectStageId = 1;
+            project.status = "row";
         } else if (status === "laminate") {
-            project.projectStageId = 2;
+            project.status = "laminate";
         } else if (status === "handover") {
-            project.projectStageId   = 3;
+            project.status   = "handover";
         } else {
             return res.status(400).json({ message: "Invalid status value" });
         }

@@ -138,7 +138,7 @@ const updateOrder = async (req, res) => {
     }
 };
 const conformorder = async (req, res) => {
-    const { products, invoiceNumber, orderBy, project, orderid } = req.body;
+    const { products, invoiceNumber, orderBy, project, orderid,deliveredBy,dispatchBy } = req.body;
 
     if (!products || !Array.isArray(products) || products.length === 0) {
         return res.status(400).json({ message: "Products array is required" });
@@ -167,6 +167,8 @@ const conformorder = async (req, res) => {
             invoiceNumber,
             orderBy,
             project,
+            deliveredBy,
+            dispatchBy
         });
 
         await OrderProduct.destroy({ where: { orderId: orderid } });
