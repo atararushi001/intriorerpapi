@@ -546,7 +546,10 @@ const updateProjectStatus = async (req, res) => {
             project.status = "laminate";
         } else if (status === "handover") {
             project.status   = "handover";
-        } else {
+        } else if (status === "Complete") {
+            project.status   = "Complete";
+        } 
+         else {
             return res.status(400).json({ message: "Invalid status value" });
         }
 

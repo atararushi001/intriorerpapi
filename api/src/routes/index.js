@@ -16,7 +16,12 @@ const purchaseOrderRoutes = require("./purchase_order.routes");
 
 const paymentStageRoutes = require("./payment_stage.routes");
 
+
+
 const TaskRoutes = require("./task.routes");
+
+const reportingRoutes = require("./reporting.routes");
+
 router.use("/users", userRoutes);
 router.use("/punch-in", punchinRoutes);
 
@@ -37,6 +42,7 @@ const Task = require("../models/task.model");
 router.use("/orders", orderRoutes);
 
 router.use("/payment-stages", paymentStageRoutes);
+router.use("/reporting", reportingRoutes);
 
 
 
