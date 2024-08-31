@@ -257,10 +257,33 @@ const conformorder = async (req, res) => {
         res.status(500).json({ message: "Error updating order", error });
     }
 };
+
+const delivered = async (req, res) => {
+    const { id } = req.params;
+    const { deliverylocation,deliverydate } = req.body;
+
+    try {
+        const order = await Order.findByPk(id);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+    const deliveryphoto = req.file?.path
+        ? req.file.path.replace(/\\/g, "/").split("public")[1]
+        : "";
+
+        await order.update({ status: "delivered",deliverylocation,deliverydate,deliveryphoto });
+
+        res.status(200).json(order);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating order", error });
+    }
+}
 module.exports = {
     createOrder,
     getAllOrders,
     getOrdersByCreatedById,
     updateOrder,
     conformorder,
+    delivered
 };
