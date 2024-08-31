@@ -22,6 +22,8 @@ const TaskRoutes = require("./task.routes");
 
 const reportingRoutes = require("./reporting.routes");
 
+const extraMaterialRoutes = require("./extraMaterial.routes");
+
 router.use("/users", userRoutes);
 router.use("/punch-in", punchinRoutes);
 
@@ -44,6 +46,7 @@ router.use("/orders", orderRoutes);
 router.use("/payment-stages", paymentStageRoutes);
 router.use("/reporting", reportingRoutes);
 
+router.use("/extra-materials", extraMaterialRoutes);
 
 
 module.exports = router;

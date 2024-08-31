@@ -45,7 +45,7 @@ const createOrder = async (req, res) => {
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
                  },
@@ -69,7 +69,7 @@ const getAllOrders = async (req, res) => {
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
                 },
@@ -93,7 +93,7 @@ const getOrdersByCreatedById = async (req, res) => {
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
                 },
@@ -157,7 +157,7 @@ const updateOrder = async (req, res) => {
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
                 },
@@ -243,7 +243,7 @@ const conformorder = async (req, res) => {
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
                 },
