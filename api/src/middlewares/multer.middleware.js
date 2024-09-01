@@ -49,6 +49,12 @@ const designStorage = multer.diskStorage({
     },
     filename: generateFileName("design"),
 });
+const referenceDesignStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads/designs");
+    },
+    filename: generateFileName("design"),
+});
 
 const extraWorkStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -99,7 +105,13 @@ const designUpload = multer({
         fileSize: 1024 * 1024 * 10, // 5MB
     },
 });
-
+const referenceDesignUpload = multer({
+    storage: referenceDesignStorage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 10, // 5MB
+    },
+});
 const extraWorkUpload = multer({
     storage: extraWorkStorage,
     fileFilter: fileFilter,
@@ -118,6 +130,7 @@ const punch_in_image = multer({
 module.exports = {
     profilePictureUpload,
     designUpload,
+    referenceDesignUpload,
     extraWorkUpload,
     punch_in_image,
     taskimagesupload,
