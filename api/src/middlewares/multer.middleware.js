@@ -19,6 +19,12 @@ const fileFilter = (req, file, cb) => {
         cb(new Error("Invalid file type. Only JPEG and PNG are allowed"));
     }
 };
+const expenseStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads/expense");
+    },
+    filename: generateFileName("profilePicture"),
+});
 const orderddeliveredStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "public/uploads/orderdelivered");
@@ -59,6 +65,13 @@ const Punch_in_Storage = multer.diskStorage({
 });
 const orderddeliveredupload = multer({
     storage: orderddeliveredStorage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 2, // 2MB
+    },
+});
+const expenseupload = multer({
+    storage: expenseStorage,
     fileFilter: fileFilter,
     limits: {
         fileSize: 1024 * 1024 * 2, // 2MB
@@ -109,4 +122,5 @@ module.exports = {
     punch_in_image,
     taskimagesupload,
     orderddeliveredupload,
+    expenseupload,
 };

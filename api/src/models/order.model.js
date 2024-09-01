@@ -17,17 +17,19 @@ const Order = sequelize.define("Order", {
     },
     deliveryphoto: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     deliverylocation: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     deliverydate: {
         type: DataTypes.DATE,
+        allowNull: true,
     },
     dispatchdate: {
         type: DataTypes.DATE,
+        allowNull: true,
     },
 
     // orderBy: {

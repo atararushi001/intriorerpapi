@@ -95,7 +95,73 @@ const getExtraMaterialByProjectId = async (req, res) => {
         res.status(500).json({ message: "Error fetching extra materials", error });
     }
 };
+
+const updateExtraMaterial = async (req, res) => {
+    const { id } = req.params;
+    const { products, invoiceNumber, extraMaterialby, project } = req.body;
+
+    if (!products || !Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ message: "Products array is required" });
+    }
+
+    if (!invoiceNumber) {
+        return res.status(400).json({ message: "Invoice number is required" });
+    }
+
+    try {
+        const extraMaterialRecord = await extraMaterial.findByPk(id);
+
+        if (!extraMaterialRecord) {
+            return res.status(404).json({ message: "Extra material not found" });
+        }
+
+        // Update the extraMaterial record
+        extraMaterialRecord.invoiceNumber = invoiceNumber;
+        extraMaterialRecord.extraMaterialby = extraMaterialby;
+        extraMaterialRecord.project = project;
+
+        await extraMaterialRecord.save();
+
+        // Update the extraMaterialProduct records
+        await extraMaterialProduct.destroy({ where: { extraMaterialId: id } });
+
+        for (const product of products) {
+            const { productId, quantity } = product;
+            if (!productId || !quantity) {
+                return res.status(400).json({ message: "Product ID and quantity are required" });
+            }
+
+            await extraMaterialProduct.create({
+                extraMaterialId: id,
+                productId,
+                quantity,
+            });
+        }
+
+        const updatedOrder = await extraMaterial.findByPk(id, {
+            include: [
+                {
+                    model: extraMaterialProduct,
+                    include: [
+                        {
+                            model: Product,
+                            as: "product",
+                        },
+                    ],
+                },
+                { model: User, as: "extraMaterialbyid" },
+                { model: Project, as: "projectid" },
+            ],
+        });
+
+        res.status(200).json(updatedOrder);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating extra material", error });
+    }
+};
+
 module.exports = {
     createextraMaterial,
     getExtraMaterialByProjectId,
+    updateExtraMaterial,
 };
