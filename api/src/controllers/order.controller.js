@@ -200,6 +200,7 @@ const conformorder = async (req, res) => {
         products,
         invoiceNumber,
         orderBy,
+        
         project,
         status,
         orderid,
@@ -305,6 +306,29 @@ const delivered = async (req, res) => {
         res.status(500).json({ message: "Error updating order", error });
     }
 }
+const getOrdersBydeliveryById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const orders = await Order.findAll({
+            where: { deliveredBy: id },
+            include: [
+                { model: OrderProduct ,
+                    include: [
+                        {
+                            model: Product,
+                            as: "product",
+                        },
+                    ],
+                },
+                { model: User, as: "orderByid" },
+                { model: Project, as: "projectid" },
+            ],
+        });
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching orders", error });
+    }
+};
 module.exports = {
     createOrder,
     getAllOrders,
@@ -312,5 +336,5 @@ module.exports = {
     updateOrder,
     conformorder,
     delivered,
-    getOrdersBydeliveryById
+    getOrdersBydeliveryById,
 };

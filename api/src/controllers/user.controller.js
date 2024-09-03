@@ -270,17 +270,17 @@ const getclientbysuervisorId = async (req,res) => {
                 supervisor_id: id,
             },
         });
-    
+
         const projectIds = projects.map(project => project.client_id);
 
         console.log("client ID:::",projectIds);
-        
+
 
         const users = await User.findAll({
             where: {
                 id: projectIds,
             },
-           
+
             include: [{ model: Project }],
 
             include: [
@@ -300,7 +300,7 @@ const getclientbysuervisorId = async (req,res) => {
         res.status(500).json({ message: "Error fetching users", error: error.message });
     }
 
-    
+
 
 
 }
@@ -315,17 +315,17 @@ const getsuervisorbyclientId = async (req,res) => {
                 client_id: id,
             },
         });
-    
+
         const projectIds = projects.map(project => project.supervisor_id);
 
         console.log("client ID:::",projectIds);
-        
+
 
         const users = await User.findAll({
             where: {
                 id: projectIds,
             },
-           
+
             include: [{ model: Project }],
 
             include: [
@@ -345,11 +345,7 @@ const getsuervisorbyclientId = async (req,res) => {
         res.status(500).json({ message: "Error fetching users", error: error.message });
     }
 
-    
-
-
 }
-
 module.exports = {
     createUser,
     getUsers,
@@ -358,5 +354,5 @@ module.exports = {
     deleteUser,
     loginUser,
     getclientbysuervisorId,
-    getsuervisorbyclientId
+    getsuervisorbyclientId,
 };

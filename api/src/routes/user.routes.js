@@ -19,5 +19,6 @@ router.get("/getclientbysuervisor/:id", getclientbysuervisorId);
 router.get("/getsuervisorbyclient/:id", getsuervisorbyclientId);
 router.put("/:id", profilePictureUpload.single("profilePicture"),  updateUser);
 router.delete("/:id", deleteUser);
-
+router.get("/getclientbysuervisor/:id", getclientbysuervisorId);
+router.get("/getsuervisorbyclient/:id", getsuervisorbyclientId);
 module.exports = router;

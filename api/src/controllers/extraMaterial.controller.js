@@ -96,7 +96,6 @@ const getExtraMaterialByProjectId = async (req, res) => {
     }
 };
 
-
 const updateExtraMaterial = async (req, res) => {
     const { id } = req.params;
     const { products, invoiceNumber, extraMaterialby, project } = req.body;
@@ -164,5 +163,5 @@ const updateExtraMaterial = async (req, res) => {
 module.exports = {
     createextraMaterial,
     getExtraMaterialByProjectId,
-    updateExtraMaterial
+    updateExtraMaterial,
 };

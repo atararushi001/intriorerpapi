@@ -24,6 +24,10 @@ const reportingRoutes = require("./reporting.routes");
 
 const extraMaterialRoutes = require("./extraMaterial.routes");
 
+const ExpenseRoutes = require("./Expense.routes");
+
+const referenceDesign = require("./referenceDesign.routes");
+
 router.use("/users", userRoutes);
 router.use("/punch-in", punchinRoutes);
 
@@ -47,6 +51,6 @@ router.use("/payment-stages", paymentStageRoutes);
 router.use("/reporting", reportingRoutes);
 
 router.use("/extra-materials", extraMaterialRoutes);
-
-
+router.use("/expenses", ExpenseRoutes);
+router.use("/reference-designs", referenceDesign);
 module.exports = router;

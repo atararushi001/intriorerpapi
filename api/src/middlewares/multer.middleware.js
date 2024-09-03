@@ -19,6 +19,12 @@ const fileFilter = (req, file, cb) => {
         cb(new Error("Invalid file type. Only JPEG and PNG are allowed"));
     }
 };
+const expenseStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads/expense");
+    },
+    filename: generateFileName("expensePicture"),
+});
 const orderddeliveredStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "public/uploads/orderdelivered");
@@ -43,6 +49,12 @@ const designStorage = multer.diskStorage({
     },
     filename: generateFileName("design"),
 });
+const referenceDesignStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/uploads/designs");
+    },
+    filename: generateFileName("design"),
+});
 
 const extraWorkStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -59,6 +71,13 @@ const Punch_in_Storage = multer.diskStorage({
 });
 const orderddeliveredupload = multer({
     storage: orderddeliveredStorage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 2, // 2MB
+    },
+});
+const expenseupload = multer({
+    storage: expenseStorage,
     fileFilter: fileFilter,
     limits: {
         fileSize: 1024 * 1024 * 2, // 2MB
@@ -86,7 +105,13 @@ const designUpload = multer({
         fileSize: 1024 * 1024 * 10, // 5MB
     },
 });
-
+const referenceDesignUpload = multer({
+    storage: referenceDesignStorage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 10, // 5MB
+    },
+});
 const extraWorkUpload = multer({
     storage: extraWorkStorage,
     fileFilter: fileFilter,
@@ -105,8 +130,10 @@ const punch_in_image = multer({
 module.exports = {
     profilePictureUpload,
     designUpload,
+    referenceDesignUpload,
     extraWorkUpload,
     punch_in_image,
     taskimagesupload,
     orderddeliveredupload,
+    expenseupload,
 };
