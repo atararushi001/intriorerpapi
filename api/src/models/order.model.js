@@ -1,20 +1,37 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db.config");
-const User = require('./user.model');
-const Product = require('./product.model');
-const OrderProduct = require('./orderproduct.model');
-const Project = require('./project.model');
+const User = require("./user.model");
+const Product = require("./product.model");
+const OrderProduct = require("./orderproduct.model");
+const Project = require("./project.model");
 
-const Order = sequelize.define('Order', {
+const Order = sequelize.define("Order", {
     invoiceNumber: {
         type: DataTypes.STRING,
         allowNull: false,
-    },  
-    status: {
-        type: DataTypes.ENUM('pending', 'dispatched', 'delivered'),
-        allowNull: false,
-        defaultValue: 'pending',
     },
+    status: {
+        type: DataTypes.ENUM("pending", "dispatched", "delivered"),
+        allowNull: false,
+        defaultValue: "pending",
+    },
+    deliveryphoto: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    deliverylocation: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    deliverydate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    dispatchdate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+
     // orderBy: {
     //     type: DataTypes.INTEGER,
     //     allowNull: false,
@@ -48,6 +65,6 @@ Order.belongsTo(User, {
     foreignKey: "dispatchBy",
     allowNull: true,
 });
-Order.hasMany(OrderProduct, { foreignKey: 'orderId' });
+Order.hasMany(OrderProduct, { foreignKey: "orderId" });
 
 module.exports = Order;

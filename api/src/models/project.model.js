@@ -105,11 +105,11 @@ const Project = sequelize.define(
         //   },
         //   allowNull: true,
         // },
-        // status: {
-        //     type: DataTypes.STRING,
-        //     allowNull: true,
-        //     defaultValue: "Pending",
-        // },
+        status: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            defaultValue: "row",
+        },
         isActive: {
             type: DataTypes.BOOLEAN,
             allowNull: false,

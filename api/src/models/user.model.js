@@ -45,7 +45,8 @@ const User = sequelize.define(
                 "Designer",
                 "Worker",
                 "Supervisor",
-                "factoryteam",
+                "factoryteam",      
+                "DeliveryBoy"
             ),
             allowNull: true,
         },

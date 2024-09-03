@@ -3,10 +3,12 @@ const OrderProduct = require("../models/orderproduct.model");
 const Product = require("../models/product.model");
 const User = require("../models/user.model");
 const Project = require("../models/project.model");
+const extraMaterial = require("../models/extraMaterial.model");
+const extraMaterialProduct = require("../models/extraMaterialproduct.model");
 
-// Create a new order
-const createOrder = async (req, res) => {
-    const { products, invoiceNumber, orderBy, project } = req.body;
+// Create a new extraMaterial
+const createextraMaterial = async (req, res) => {
+    const { products, invoiceNumber, extraMaterialby, project } = req.body;
 
     if (!products || !Array.isArray(products) || products.length === 0) {
         return res.status(400).json({ message: "Products array is required" });
@@ -17,39 +19,43 @@ const createOrder = async (req, res) => {
     }
 
     try {
-        const createdOrder = await Order.create({
+        // Check if the project exists
+        const projectExists = await Project.findByPk(project);
+        if (!projectExists) {
+            return res.status(400).json({ message: "Project does not exist" });
+        }
+
+        const createextraMaterial = await extraMaterial.create({
             invoiceNumber,
-            orderBy,
+            extraMaterialby,
             project,
         });
 
         for (const product of products) {
             const { productId, quantity } = product;
             if (!productId || !quantity) {
-                return res
-                    .status(400)
-                    .json({ message: "Product ID and quantity are required" });
+                return res.status(400).json({ message: "Product ID and quantity are required" });
             }
 
-            await OrderProduct.create({
-                orderId: createdOrder.id,
+            await extraMaterialProduct.create({
+                extraMaterialId: createextraMaterial.id,
                 productId,
                 quantity,
             });
         }
 
-        const fullOrder = await Order.findByPk(createdOrder.id, {
+        const fullOrder = await extraMaterial.findByPk(createextraMaterial.id, {
             include: [
-                { model: OrderProduct
-                    ,
+                {
+                    model: extraMaterialProduct,
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
-                 },
-                { model: User, as: "orderByid" },
+                },
+                { model: User, as: "extraMaterialbyid" },
                 { model: Project, as: "projectid" },
             ],
         });
@@ -59,128 +65,41 @@ const createOrder = async (req, res) => {
         res.status(500).json({ message: "Error creating order", error });
     }
 };
-
-// Get all orders
-const getAllOrders = async (req, res) => {
-    try {
-        const orders = await Order.findAll({
-            include: [
-                { model: OrderProduct ,
-                    include: [
-                        {
-                            model: Product,
-                            as: "productId",
-                        },
-                    ],
-                },
-
-                { model: User, as: "orderByid" },
-                { model: Project, as: "projectid" },
-            ],
-        });
-        res.status(200).json(orders);
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching orders", error });
-    }
-};
-const getOrdersByCreatedById = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const orders = await Order.findAll({
-            where: { orderBy: id },
-            include: [
-                { model: OrderProduct ,
-                    include: [
-                        {
-                            model: Product,
-                            as: "productId",
-                        },
-                    ],
-                },
-                { model: User, as: "orderByid" },
-                { model: Project, as: "projectid" },
-            ],
-        });
-        res.status(200).json(orders);
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching orders", error });
-    }
-};
-
-// Update an order
-const updateOrder = async (req, res) => {
-    const { id } = req.params;
-    const { products, invoiceNumber, orderBy, project } = req.body;
-
-    if (!products || !Array.isArray(products) || products.length === 0) {
-        return res.status(400).json({ message: "Products array is required" });
-    }
-
-    if (!invoiceNumber) {
-        return res.status(400).json({ message: "Invoice number is required" });
-    }
+const getExtraMaterialByProjectId = async (req, res) => {
+    const { projectId } = req.params;
 
     try {
-        const order = await Order.findByPk(id);
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
-        }
-
-        await order.update({
-            invoiceNumber,
-            orderBy,
-            project,
-        });
-
-        await OrderProduct.destroy({ where: { orderId: id } });
-
-        for (const product of products) {
-            const { productId, quantity } = product;
-            if (!productId || !quantity) {
-                return res
-                    .status(400)
-                    .json({ message: "Product ID and quantity are required" });
-            }
-
-            await OrderProduct.create({
-                orderId: id,
-                productId,
-                quantity,
-            });
-        }
-
-        const fullOrder = await Order.findByPk(id, {
+        const extraMaterials = await extraMaterial.findAll({
+            where: { project: projectId },
             include: [
                 {
-                    model: OrderProduct
-                    ,
+                    model: extraMaterialProduct,
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
                 },
-                { model: User, as: "orderByid" },
+                { model: User, as: "extraMaterialbyid" },
                 { model: Project, as: "projectid" },
             ],
         });
 
-        res.status(200).json(fullOrder);
+        if (extraMaterials.length === 0) {
+            return res.status(404).json({ message: "No extra materials found for this project" });
+        }
+
+        res.status(200).json(extraMaterials);
     } catch (error) {
-        res.status(500).json({ message: "Error updating order", error });
+        res.status(500).json({ message: "Error fetching extra materials", error });
     }
 };
-const conformorder = async (req, res) => {
-    const {
-        products,
-        invoiceNumber,
-        orderBy,
-        project,
-        orderid,
-        deliveredBy,
-        dispatchBy,
-    } = req.body;
+
+
+const updateExtraMaterial = async (req, res) => {
+    const { id } = req.params;
+    const { products, invoiceNumber, extraMaterialby, project } = req.body;
 
     if (!products || !Array.isArray(products) || products.length === 0) {
         return res.status(400).json({ message: "Products array is required" });
@@ -191,76 +110,59 @@ const conformorder = async (req, res) => {
     }
 
     try {
-        const order = await Order.findByPk(orderid);
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
+        const extraMaterialRecord = await extraMaterial.findByPk(id);
+
+        if (!extraMaterialRecord) {
+            return res.status(404).json({ message: "Extra material not found" });
         }
 
-        const user = await User.findByPk(orderBy);
-        if (!user) {
-            return res.status(400).json({ message: "User not found" });
-        }
-        const projectRecord = await Project.findByPk(project);
-        if (!projectRecord) {
-            return res.status(400).json({ message: "Project not found" });
-        }
+        // Update the extraMaterial record
+        extraMaterialRecord.invoiceNumber = invoiceNumber;
+        extraMaterialRecord.extraMaterialby = extraMaterialby;
+        extraMaterialRecord.project = project;
 
-        await order.update({
-            invoiceNumber,
-            orderBy,
-            project,
-            deliveredBy,
-            dispatchBy,
-        });
+        await extraMaterialRecord.save();
 
-        await OrderProduct.destroy({ where: { orderId: orderid } });
+        // Update the extraMaterialProduct records
+        await extraMaterialProduct.destroy({ where: { extraMaterialId: id } });
 
         for (const product of products) {
             const { productId, quantity } = product;
             if (!productId || !quantity) {
-                return res
-                    .status(400)
-                    .json({ message: "Product ID and quantity are required" });
+                return res.status(400).json({ message: "Product ID and quantity are required" });
             }
 
-            await OrderProduct.create({
-                orderId: orderid,
+            await extraMaterialProduct.create({
+                extraMaterialId: id,
                 productId,
                 quantity,
             });
-
-            const productRecord = await Product.findByPk(productId);
-            if (productRecord) {
-                await productRecord.update({
-                    stock: productRecord.stock - quantity,
-                });
-            }
         }
 
-        const fullOrder = await Order.findByPk(createdOrder.id, {
+        const updatedOrder = await extraMaterial.findByPk(id, {
             include: [
-                { model: OrderProduct  ,
+                {
+                    model: extraMaterialProduct,
                     include: [
                         {
                             model: Product,
-                            as: "productId",
+                            as: "product",
                         },
                     ],
                 },
-                { model: User, as: "orderByid" },
+                { model: User, as: "extraMaterialbyid" },
                 { model: Project, as: "projectid" },
             ],
         });
 
-        res.status(200).json(fullOrder);
+        res.status(200).json(updatedOrder);
     } catch (error) {
-        res.status(500).json({ message: "Error updating order", error });
+        res.status(500).json({ message: "Error updating extra material", error });
     }
 };
+
 module.exports = {
-    createOrder,
-    getAllOrders,
-    getOrdersByCreatedById,
-    updateOrder,
-    conformorder,
+    createextraMaterial,
+    getExtraMaterialByProjectId,
+    updateExtraMaterial
 };

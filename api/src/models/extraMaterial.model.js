@@ -1,19 +1,18 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require("../config/db.config");
-const User = require('./user.model');
-const Product = require('./product.model');
-const OrderProduct = require('./orderproduct.model');
+const User = require('./user.model');   
 const Project = require('./project.model');
+const extraMaterialProduct = require('./extraMaterialproduct.model');
 
-const Order = sequelize.define('Order', {
+const extraMaterial = sequelize.define('extraMaterial', {
     invoiceNumber: {
         type: DataTypes.STRING,
         allowNull: false,
     },  
     status: {
-        type: DataTypes.ENUM('pending', 'dispatched', 'delivered'),
+        type: DataTypes.ENUM('updated'),
         allowNull: false,
-        defaultValue: 'pending',
+        defaultValue: 'updated',
     },
     // orderBy: {
     //     type: DataTypes.INTEGER,
@@ -28,26 +27,17 @@ const Order = sequelize.define('Order', {
     //     allowNull: true,
     // },
 });
-Order.belongsTo(Project, {
+extraMaterial.belongsTo(Project, {
     as: "projectid",
     foreignKey: "project",
     allowNull: true,
 });
-Order.belongsTo(User, {
-    as: "orderByid",
-    foreignKey: "orderBy",
+extraMaterial.belongsTo(User, {
+    as: "extraMaterialbyid",
+    foreignKey: "extraMaterialby",
     allowNull: true,
 });
-Order.belongsTo(User, {
-    as: "deliveredByid",
-    foreignKey: "deliveredBy",
-    allowNull: true,
-});
-Order.belongsTo(User, {
-    as: "dispatchByid",
-    foreignKey: "dispatchBy",
-    allowNull: true,
-});
-Order.hasMany(OrderProduct, { foreignKey: 'orderId' });
 
-module.exports = Order;
+extraMaterial.hasMany(extraMaterialProduct, { foreignKey: 'extraMaterialId' });
+
+module.exports = extraMaterial;
