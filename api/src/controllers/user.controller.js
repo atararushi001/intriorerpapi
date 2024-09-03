@@ -260,6 +260,92 @@ const deleteUser = async (req, res) => {
     }
 };
 
+const getclientbysuervisorId = async (req,res) => {
+    const id = req.params.id;
+
+    try {
+
+        const projects = await Project.findAll({
+            where: {
+                supervisor_id: id,
+            },
+        });
+
+        const projectIds = projects.map(project => project.client_id);
+
+        console.log("client ID:::",projectIds);
+
+
+        const users = await User.findAll({
+            where: {
+                id: projectIds,
+            },
+
+            include: [{ model: Project }],
+
+            include: [
+                { model: Cities, as: "city", 
+                         include: [
+                    {
+                        model: States,  
+                        include: [{ model: Countries }],
+                    }, 
+                ] }, // Add a comma here
+            ],
+
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching users", error: error.message });
+    }
+
+
+
+
+}
+
+const getsuervisorbyclientId = async (req,res) => {
+    const id = req.params.id;
+
+    try {
+
+        const projects = await Project.findAll({
+            where: {
+                client_id: id,
+            },
+        });
+
+        const projectIds = projects.map(project => project.supervisor_id);
+
+        console.log("client ID:::",projectIds);
+
+
+        const users = await User.findAll({
+            where: {
+                id: projectIds,
+            },
+
+            include: [{ model: Project }],
+
+            include: [
+                { model: Cities, as: "city", 
+                         include: [
+                    {
+                        model: States,  
+                        include: [{ model: Countries }],
+                    }, 
+                ] }, // Add a comma here
+            ],
+
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error fetching users", error: error.message });
+    }
+
+}
 module.exports = {
     createUser,
     getUsers,
@@ -267,4 +353,6 @@ module.exports = {
     updateUser,
     deleteUser,
     loginUser,
+    getclientbysuervisorId,
+    getsuervisorbyclientId,
 };

@@ -6,7 +6,9 @@ const {
     getUserById,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    getclientbysuervisorId,
+    getsuervisorbyclientId
 } = require("../controllers/user.controller");
 
 router.post("/", profilePictureUpload.single("profilePicture"), createUser);
@@ -15,5 +17,6 @@ router.get("/", getUsers);
 router.get("/:id", getUserById);
 router.put("/:id", profilePictureUpload.single("profilePicture"),  updateUser);
 router.delete("/:id", deleteUser);
-
+router.get("/getclientbysuervisor/:id", getclientbysuervisorId);
+router.get("/getsuervisorbyclient/:id", getsuervisorbyclientId);
 module.exports = router;

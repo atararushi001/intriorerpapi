@@ -23,13 +23,13 @@ const expenseStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "public/uploads/expense");
     },
-    filename: generateFileName("profilePicture"),
+    filename: generateFileName("expensePicture"),
 });
 const orderddeliveredStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "public/uploads/orderdelivered");
     },
-    filename: generateFileName("profilePicture"),
+    filename: generateFileName("deliveryphoto"),
 });
 const profilePictureStorage = multer.diskStorage({
     destination: function (req, file, cb) {
