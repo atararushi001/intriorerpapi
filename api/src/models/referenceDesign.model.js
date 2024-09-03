@@ -24,11 +24,7 @@ const referenceDesign = sequelize.define(
     },
 );
 
-referenceDesign.belongsTo(Project, {
-    as: "projectid",
-    foreignKey: "project",
-    allowNull: true,
-});
+
 referenceDesign.belongsTo(User, {
     as: "createdByid",
     foreignKey: "createdBy",

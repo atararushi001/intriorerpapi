@@ -1,6 +1,9 @@
 
 
 const  Expense = require("../models/Expense.module");
+const Project = require("../models/project.model");
+const User = require("../models/user.model");
+
 
 
 const createExpense = async (req, res) => {
@@ -36,7 +39,7 @@ const getallExpense= async(req,res)=>{
         const expenses = await Expense.findAll(
             {
                 include: [
-                    { model: User, as: "createdBy" },
+                    { model: User, as: "createdByid" },
                     { model: Project, as: "projectid" },
                 ],
             }
@@ -55,7 +58,7 @@ const getExpenseByuserid = async (req, res) => {
                     createdBy: req.params.id,
                 },
                 include: [
-                    { model: User, as: "createdBy" },
+                    { model: User, as: "createdByid" },
                     { model: Project, as: "projectid" },
                 ],
             }

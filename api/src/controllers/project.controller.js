@@ -6,6 +6,7 @@ const project_Stage = require("../models/project_stage.model");
 const User = require("../models/user.model");
 const Design = require("../models/design.model");
 const Task = require("../models/task.model");
+const referenceDesign = require("../models/referenceDesign.model");
 
 // Create a new project
 const createProject = async (req, res) => {
@@ -33,7 +34,9 @@ const createProject = async (req, res) => {
         // Check if head_carpenter_id exists in Users table
         const headCarpenter = await User.findByPk(head_carpenter_id);
         if (!headCarpenter) {
-            return res.status(400).json({ message: "Invalid head_carpenter_id" });
+            return res
+                .status(400)
+                .json({ message: "Invalid head_carpenter_id" });
         }
 
         // Create the project
@@ -56,66 +59,103 @@ const createProject = async (req, res) => {
             created_by,
             status,
         });
-      const projectid = project.id;
+        const projectid = project.id;
         // Create stages
-        const rawStage = await project_Stage.create({ name: 'Raw', project_id: projectid });
-        const laminateStage = await project_Stage.create({ name: 'Laminate', project_id: projectid });
+        const rawStage = await project_Stage.create({
+            name: "Raw",
+            project_id: projectid,
+        });
+        const laminateStage = await project_Stage.create({
+            name: "Laminate",
+            project_id: projectid,
+        });
 
         // Create sub-stages for Raw stage
-        const popSubStage = await Project_Sub_Stage.create({ name: 'POP`', projectStageId: rawStage.id });
-        const electricalSubStage = await Project_Sub_Stage.create({ name: 'Electrical', projectStageId: rawStage.id });
-        const carpentrySubStage = await Project_Sub_Stage.create({ name: 'Carpentry work', projectStageId: rawStage.id });
+        const popSubStage = await Project_Sub_Stage.create({
+            name: "POP`",
+            projectStageId: rawStage.id,
+        });
+        const electricalSubStage = await Project_Sub_Stage.create({
+            name: "Electrical",
+            projectStageId: rawStage.id,
+        });
+        const carpentrySubStage = await Project_Sub_Stage.create({
+            name: "Carpentry work",
+            projectStageId: rawStage.id,
+        });
 
         // Create sub-stage for Laminate stage
-        const laminationSubStage = await Project_Sub_Stage.create({ name: 'Lamination', projectStageId: laminateStage.id });
+        const laminationSubStage = await Project_Sub_Stage.create({
+            name: "Lamination",
+            projectStageId: laminateStage.id,
+        });
 
         // Predefined tasks for sub-stages
         const predefinedTasks = {
-            POP: ['pop leve', 'gypsum bran', 'fan cente', 'pelmet to ceiling height', 'if design getting cut in wardrobe', 'light cutting'],
+            POP: [
+                "pop leve",
+                "gypsum bran",
+                "fan cente",
+                "pelmet to ceiling height",
+                "if design getting cut in wardrobe",
+                "light cutting",
+            ],
             Electrical: [
-                'tv unit cabling',
-                'calculate total circuit and',
-                'look if enough switch or',
-                'plug points are there or not',
-                'AC wire line required or not',
-                'plug point for chimney',
-                '8M side by side to bed',
-                'plug point for dressing',
-                'plug points for study',
-                'is there any point for wall',
-                'mount light which is shown in 3D'
+                "tv unit cabling",
+                "calculate total circuit and",
+                "look if enough switch or",
+                "plug points are there or not",
+                "AC wire line required or not",
+                "plug point for chimney",
+                "8M side by side to bed",
+                "plug point for dressing",
+                "plug points for study",
+                "is there any point for wall",
+                "mount light which is shown in 3D",
             ],
             Carpentry: [
-                'Raw work according to designs',
-                'check wardrobe drawer finishing and working',
-                'check if there is any plywood used for paneling',
-                'bed design check',
-                'manual or hydraulic check',
-                'space for plates in kitchen unit',
-                'check carpenter has cut switchboards in tv unit, dressing, side tables'
+                "Raw work according to designs",
+                "check wardrobe drawer finishing and working",
+                "check if there is any plywood used for paneling",
+                "bed design check",
+                "manual or hydraulic check",
+                "space for plates in kitchen unit",
+                "check carpenter has cut switchboards in tv unit, dressing, side tables",
             ],
             Lamination: [
-                'Laminate finishing photos',
-                'Handle received or not',
-                'cnc received or not',
-                'mdf paneling is done or not',
-                'wainscot done or not',
-                'is there light point in paneling done or not'
+                "Laminate finishing photos",
+                "Handle received or not",
+                "cnc received or not",
+                "mdf paneling is done or not",
+                "wainscot done or not",
+                "is there light point in paneling done or not",
             ],
         };
 
         // Create tasks for each sub-stage
         for (const task of predefinedTasks.POP) {
-            await Task.create({ name: task, ProjectSubStageId: popSubStage.id  });
+            await Task.create({
+                name: task,
+                ProjectSubStageId: popSubStage.id,
+            });
         }
         for (const task of predefinedTasks.Electrical) {
-            await Task.create({ name: task, ProjectSubStageId: electricalSubStage.id  });
+            await Task.create({
+                name: task,
+                ProjectSubStageId: electricalSubStage.id,
+            });
         }
         for (const task of predefinedTasks.Carpentry) {
-            await Task.create({ name: task, ProjectSubStageId: carpentrySubStage.id});
+            await Task.create({
+                name: task,
+                ProjectSubStageId: carpentrySubStage.id,
+            });
         }
         for (const task of predefinedTasks.Lamination) {
-            await Task.create({ name: task, ProjectSubStageId: laminationSubStage.id  });
+            await Task.create({
+                name: task,
+                ProjectSubStageId: laminationSubStage.id,
+            });
         }
 
         res.status(201).json({
@@ -136,14 +176,14 @@ const getProjects = async (req, res) => {
                 { model: Package, as: "Package" },
                 // { model: Location },
                 { model: User, as: "Client" },
-                
+
                 {
                     model: project_Stage,
                     as: "project_Stage",
                     include: [
                         {
                             model: Project_Sub_Stage,
-                            as: "Project_Sub_Stages", 
+                            as: "Project_Sub_Stages",
                             include: {
                                 model: Task,
                                 as: "Tasks",
@@ -155,9 +195,8 @@ const getProjects = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
-                {  model: Design, as: 'Designs'  },
-
-
+                { model: Design, as: "Designs" },
+                { model: referenceDesign, as: "referenceDesigns" },
 
                 // { model: User, as: "Creator" },
             ],
@@ -190,7 +229,8 @@ const getProjectById = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
-                {  model: Design, as: 'Designs'  },
+                { model: Design, as: "Designs" },
+                { model: referenceDesign, as: "referenceDesign" },
 
                 // { model: User, as: "Creator" },
             ],
@@ -227,8 +267,8 @@ const getProjectsByClientId = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
-                {  model: Design, as: 'Designs'  },
-
+                { model: Design, as: "Designs" },
+                { model: referenceDesign, as: "referenceDesigns" },
             ],
         });
         if (!projects || projects.length === 0) {
@@ -264,8 +304,8 @@ const getProjectsByhead_carpenter_id = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
-                {  model: Design, as: 'Designs'  },
-
+                { model: Design, as: "Designs" },
+                { model: referenceDesign, as: "referenceDesigns" },
             ],
         });
         if (!projects || projects.length === 0) {
@@ -278,8 +318,6 @@ const getProjectsByhead_carpenter_id = async (req, res) => {
         res.status(500).json({ message: "Error fetching projects", error });
     }
 };
-
-
 
 // Get a project by  Designer_id
 const getProjectsByDesignerId = async (req, res) => {
@@ -304,8 +342,8 @@ const getProjectsByDesignerId = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
-                {  model: Design, as: 'Designs'  },
-
+                { model: Design, as: "Designs" },
+                { model: referenceDesign, as: "referenceDesigns" },
             ],
         });
         if (!projects || projects.length === 0) {
@@ -341,8 +379,8 @@ const getProjectsBysupervisorId = async (req, res) => {
                 { model: User, as: "Designer" },
                 { model: User, as: "HeadCarpenter" },
                 { model: User, as: "Supervisor" },
-                {  model: Design, as: 'Designs'  },
-
+                { model: Design, as: "Designs" },
+                { model: referenceDesign, as: "referenceDesigns" },
             ],
         });
         if (!projects || projects.length === 0) {
@@ -545,11 +583,10 @@ const updateProjectStatus = async (req, res) => {
         } else if (status === "laminate") {
             project.status = "laminate";
         } else if (status === "handover") {
-            project.status   = "handover";
+            project.status = "handover";
         } else if (status === "Complete") {
-            project.status   = "Complete";
-        } 
-         else {
+            project.status = "Complete";
+        } else {
             return res.status(400).json({ message: "Invalid status value" });
         }
 
@@ -583,15 +620,17 @@ const getTasksByProjectId = async (req, res) => {
         });
 
         if (!projectStages.length) {
-            return res.status(404).json({ message: "No stages found for the given project ID" });
+            return res
+                .status(404)
+                .json({ message: "No stages found for the given project ID" });
         }
 
         // Structure the response
-        const response = projectStages.map(stage => ({
+        const response = projectStages.map((stage) => ({
             stageName: stage.name,
-            subStages: stage.Project_Sub_Stages.map(subStage => ({
+            subStages: stage.Project_Sub_Stages.map((subStage) => ({
                 subStageName: subStage.name,
-                tasks: subStage.Tasks.map(task => ({
+                tasks: subStage.Tasks.map((task) => ({
                     taskId: task.id,
                     taskName: task.name,
                 })),
@@ -601,13 +640,14 @@ const getTasksByProjectId = async (req, res) => {
         res.status(200).json(response);
     } catch (error) {
         console.log("Error is", error);
-        res.status(500).json({ message: "Error fetching tasks", error: error.message });
+        res.status(500).json({
+            message: "Error fetching tasks",
+            error: error.message,
+        });
     }
 };
 
-
 module.exports = {
-    
     updateProjectStatus,
     createProject,
     getProjects,
@@ -621,5 +661,5 @@ module.exports = {
     assignHeadCarpenter,
     assignSupervisor,
     deleteProject,
-    getTasksByProjectId
+    getTasksByProjectId,
 };

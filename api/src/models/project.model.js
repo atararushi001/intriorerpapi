@@ -6,6 +6,7 @@ const ExtraWork = require("./extraWork.model");
 const project_Stage = require("./project_stage.model");
 const Design = require("./design.model");
 const Project_Sub_Stage = require("./project_sub_stage.model");
+const referenceDesign = require("./referenceDesign.model");
 
 const Project = sequelize.define(
     "Project",
@@ -174,5 +175,10 @@ Project.belongsTo(User, {
 });
 Project.hasMany(Design);
 Design.belongsTo(Project);
-
+Project.hasMany(referenceDesign);
+referenceDesign.belongsTo(Project, {
+    as: "projectid",
+    foreignKey: "project",
+    allowNull: true,
+});
 module.exports = Project;
